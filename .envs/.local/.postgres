@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=afriproperty
+POSTGRES_USER=IOcueEKveAOFkDzpqFGnRwsPccPgyDSo
+POSTGRES_PASSWORD=XSa4T6kpuyV3nLqYL0AW8CYe2XMORJVAREN5RSMKNw8NHSs0Jj35eQw7Ur4DeE1U

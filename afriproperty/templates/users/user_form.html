@@ -1,0 +1,117 @@
+{% extends "users/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}Update Agency Information{% endblock %}
+{% block can_link %}{% url 'users:update' %}{% endblock %}
+
+{% block sub_title %}Update Agency Detail{% endblock sub_title %}
+{% block breadcrumb %}Agency{% endblock breadcrumb %}
+
+{% block header_scripts %}
+<script defer src="http://maps.googleapis.com/maps/api/js?key={{API_KEY}}&libraries=places&callback=initAutocomplete"></script>
+{% endblock header_scripts %}
+
+{% block inner %}
+<div class="col-md-8">
+  <form method="post" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    {{ form.source.errors }}
+    {{ form.source }}
+
+    <div class="row">
+      <div class="col-md-8 my-profile">
+        <h4 class="margin-top-0 margin-bottom-10">Agency Information</h4>
+        <div class="row row-with-forms">
+          <div class="col-md-12">
+            <label for="id_company_name">Agency Name(Can be a developer company or an individual serving as a company)</label>
+            <input placeholder="Agent operational name or agency company" {% if object.company_name %}readonly{% endif %} id="id_company_name" maxlength="150" name="company_name" value="{% if object.company_name %}{{object.company_name}}{% endif %}" type="text">
+            <small>{{form.company_name.errors}}</small>
+          </div>
+  
+          <div class="col-md-12">
+            <label for="id_company_address">Company Address</label>
+            <input placeholder="Start typing, google will suggest a real address for you" {% if object.company_address %}readonly{% endif %} id="id_company_address" maxlength="150" name="company_address" value="{% if object.company_address %}{{object.company_address}}{% endif %}" type="text">
+            <small>{{form.company_address.errors}}</small>
+          </div>
+
+          <div class="col-md-12">
+            <label for="id_about">Write smthing impressive to get your clients to trust your brand.</label>
+            {{form.about}}
+          </div>
+
+        </div>
+
+        <h4 class="margin-top-0 margin-bottom-10 margin-top-55">Bank Information</h4>
+        <small class="text-info">Use accurate information for this as this will enable you earn the verified badge.</small>
+        <div class="row row-with-forms">
+          <div class="col-md-12">
+            {{form.bank_name}}
+          </div>
+  
+          <div class="col-md-12">
+            <label for="id_account_number">Your Acc. Number</label>
+            <input placeholder="10 Digit Nuban Number" {% if object.account_number %}readonly{% endif %} id="id_account_number" maxlength="200" name="account_number" value="{% if object.account_number %}{{object.account_number}}{% endif %}" type="number">
+            <small>{{form.account_number.errors}}</small>
+          </div>
+
+          <div class="col-md-12">
+            <label for="id_bvn">Your BVN(Bank Verification Number)</label>
+            <input placeholder="Numbers" {% if object.bvn %}readonly{% endif %} id="id_bvn" maxlength="200" name="bvn" value="{% if object.bvn %}{{object.bvn}}{% endif %}" type="number">
+            <small>{{form.bvn.errors}}</small>
+          </div>
+        </div>
+             
+      </div>
+      
+      <!-- Action buttons -->
+      <div class="col-md-4">
+
+        <div class="edit-profile-photo">
+          <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i class="fa fa-certificate text-success"></i> </span>
+          <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i class="fa fa-check text-warning"></i> </span>
+          <img src="{% if object.company_logo %}{{object.company_logo.url}}{% else %}{% static 'images/agent-02.jpg' %}{% endif %}" alt="{{object.fullname}} profile image">
+
+          {% if object == request.user.agentprofile %}
+          <div class="change-photo-btn">
+            <div class="photoUpload">
+                <span><i class="fa fa-upload"></i> Upload Photo</span>
+                <input id="id_company_logo" name="company_logo" accept="image/*" type="file" class="upload" />
+                
+              </div><!-- Your Stuff: Custom user template urls -->
+          </div>
+          {% endif %}
+        </div>
+        <small>{{form.company_logo.errors}}</small>
+        <small class="form-text text-muted" id="hint_id_comapay_logo text-primary">Logo size: 300x300</small>
+
+
+      </div> 
+      <!-- End Action buttons -->
+    </div>
+
+
+    <button type="submit" class="button border margin-top-10 margin-bottom-55 btn-block">Update</button>
+
+  </form>
+
+</div>
+{% endblock inner %}
+
+{% block inline_javascript %}
+<script>
+  function initAutocomplete() {
+    var input = document.getElementById('id_company_address');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+          window.alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+    });
+  }
+</script>
+{% endblock inline_javascript %}

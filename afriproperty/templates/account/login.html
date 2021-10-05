@@ -1,0 +1,112 @@
+{% extends "account/base.html" %}
+{% load static i18n account socialaccount crispy_forms_tags %}
+
+{% block head_title %}
+{% translate "Sign In" %}
+{% endblock %}
+
+{% block kw %}
+property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria
+{% endblock %}
+
+{% block nkw %}
+{% endblock %}
+
+{% block can_link %}
+{% url 'account_login' %}
+{% endblock %}
+
+
+
+
+
+{% block sub_title %}
+Login to your existing account
+{% endblock sub_title %}
+
+{% block breadcrumb %}
+Login
+{% endblock breadcrumb %}
+
+
+
+
+
+
+{% block inner %}
+<div class="row">
+  <div class="col-md-8 col-sm-6 col-sm-offset-2 col-xs-12 col-md-offset-2">
+    <h1>{% translate "Sign In" %}</h1>
+
+    {% get_providers as socialaccount_providers %}
+
+    {% if socialaccount_providers %}
+    <p class="text-center">
+      {% blocktranslate with site.name as site_name %}Please sign in with one
+      of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+      for a {{ site_name }} account and sign in below:{% endblocktranslate %}</p>
+
+    <div class="socialaccount_ballot">
+
+      <ul class="socialaccount_providers">
+        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+      </ul>
+
+      <div class="login-or text-center">{% translate 'or' %}</div>
+
+    </div>
+
+    {% include "socialaccount/snippets/login_extra.html" %}
+
+    {% else %}
+    <p>{% blocktranslate %}If you have not created an account yet, then please
+      <a href="{{ signup_url }}">sign up</a> first.{% endblocktranslate %}
+    </p>
+    {% endif %}
+
+    <form class="login" method="POST" action="{% url 'account_login' %}">
+      {% csrf_token %}
+
+      {{ form.non_field_errors }}
+
+      {{ form.source.errors }}
+      {{ form.source }}
+
+      <p class="form-row-wide">
+        <label for="id_login">Username/Email
+          <i class="im im-icon-Male"></i><span>*</span>
+          <input type="text" autocomplete="email" class="input-text" name="login" id="id_login" value="" required="" />
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="id_password">Password:
+          <i class="im im-icon-Lock-2"></i><span>*</span>
+          <input type="password" autocomplete="current-password" class="input-text" name="password" id="id_password"
+            value="" required="" />
+        </label>
+      </p>
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      
+      <p class="form-row-wide">
+        <label for="id_remember" class="rememberme">
+        <input name="remember" type="checkbox" id="id_remember" value="forever" /> Remember Me</label>
+
+        <button class="button border margin-top-10 btn-block" type="submit">{% translate "Sign In" %}</button>
+        
+      </p>
+
+
+      <p class="lost_password my-5 text-center">
+        <a href="{% url 'account_reset_password' %}">Have your forgotten your Password?</a>
+      </p>
+      <div class="text-center">
+        <p>Need any assistance, or feels your account has been compromised? <a href="mailto://support@propertyconnect.ng">mail us</a></p>
+      </div>
+    </form>
+
+
+  </div>
+</div>
+{% endblock %}

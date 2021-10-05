@@ -1,0 +1,52 @@
+{% extends "account/base.html" %}
+{% load static i18n account socialaccount crispy_forms_tags %}
+
+{% block head_title %}
+{% translate "Sign Out" %}
+{% endblock %}
+
+{% block kw %}
+property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria
+{% endblock %}
+
+{% block nkw %}
+{% endblock %}
+
+{% block can_link %}
+{% url 'account_logout' %}
+{% endblock %}
+
+
+
+
+
+{% block sub_title %}
+Confirm Signout Request
+{% endblock sub_title %}
+
+{% block breadcrumb %}
+Logout
+{% endblock breadcrumb %}
+
+
+
+{% block inner %}
+<div class="row">
+  <div class="col-md-8 col-sm-6 col-sm-offset-2 col-xs-12 col-md-offset-2">
+    <h1 class="text-center">{% translate "Sign Out" %}</h1>
+
+    <h3 class="text-center">{% translate 'Are you sure you want to sign out?' %}</h3>
+    <p class="text-center">This part of the site requires you to approve that
+      you want to signout from your current session. For this purpose, we require that you
+      confirm this action now.></p>
+
+    <form method="post" class="text-center" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+      {% endif %}
+      <button class="button medium text-white bg-danger btn-block" type="submit"><i class="sl sl-icon-logout mr-3"></i>{% translate 'Sign Out' %}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block title %}{{ block.super }}{% endblock title %}
+{% block desc %}{% endblock desc %}
+{% block author %}{{ block.super }}{% endblock author %}
+{% block kw %}property connect, property tips, tips, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria{% endblock %}
+{% block nkw %}{% endblock %}
+{% block can_link %}{% endblock %}
+
+{% block banner %}
+<!-- Titlebar
+================================================== -->
+<div class="parallax titlebar"
+	data-background="{% static 'images/listings-parallax.jpg' %}"
+	data-color="#333333"
+	data-color-opacity="0.7"
+	data-img-width="800"
+	data-img-height="505">
+
+    <div id="titlebar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+    
+                    <h2>{% block sub_title %}{% endblock sub_title %}</h2>
+                    <span>Pro tips on purchasing, renting and listing your properties online</span>
+                    <!-- Breadcrumbs -->
+                    <nav id="breadcrumbs">
+                        <ul>
+                            <li><a href="{% url 'home' %}">Home</a></li>
+                            <li>{% block breadcrumb %}{% endblock breadcrumb %}</li>
+                        </ul>
+                    </nav>
+    
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>
+{% endblock banner %}
+
+
+{% block content %}
+<div class="container">
+    <div class="blog-page">
+        <div class="row">
+            {% block inner %}{% endblock inner %}
+        </div>
+    </div>
+</div>
+<!-- Footer
+================================================== -->
+<div class="margin-top-55"></div>
+{% endblock %}
+
+{% block inline_javascript %}
+{% endblock inline_javascript %}

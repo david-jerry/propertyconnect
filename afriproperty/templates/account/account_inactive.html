@@ -1,0 +1,45 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% translate "Account Inactive" %}{% endblock %}
+
+{% block can_link %}
+{% url 'account_inactive' %}
+{% endblock %}
+
+{% block kw %}
+property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria
+{% endblock %}
+
+{% block nkw %}
+{% endblock %}
+
+
+
+
+{% block sub_title %}
+Confirm E-mail Address
+{% endblock sub_title %}
+
+{% block breadcrumb %}
+Confirm-E-mail-Address
+{% endblock breadcrumb %}
+
+
+
+
+
+{% block inner %}
+<div class="row">
+    <div class="col-md-8 col-sm-6 col-sm-offset-2 col-xs-12 col-md-offset-2">
+        <h1>{% translate "Account Inactive" %}</h1>
+
+        <p>{% translate "This account is inactive." %}</p>
+        <br>
+        <br>
+        <a href="{% url 'home' %}" class="button medium btn-block text-center">Return Home</a>
+
+    </div>
+</div>
+{% endblock %}

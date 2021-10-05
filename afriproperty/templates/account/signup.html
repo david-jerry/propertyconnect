@@ -1,0 +1,137 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% translate "Signup" %}{% endblock %}
+{% block kw %}
+property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria
+{% endblock %}
+
+{% block nkw %}
+{% endblock %}
+
+{% block can_link %}
+{% url 'account_signup' %}
+{% endblock %}
+
+
+
+
+
+{% block sub_title %}
+Get Registered
+{% endblock sub_title %}
+
+{% block breadcrumb %}
+Register
+{% endblock breadcrumb %}
+
+{% block inner %}
+<div class="row">
+  <div class="col-md-8 col-sm-6 col-sm-offset-2 col-xs-12 col-md-offset-2">
+    <h1>{% translate "Sign Up" %}</h1>
+
+    <p>{% blocktranslate %}
+      Already have an account? Then please <a href="{{ login_url }}">sign in</a>.
+      {% endblocktranslate %}</p>
+
+    <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}" autocomplete="on">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {{ form.source.errors }}
+      {{ form.source }}
+
+      <p class="form-row-wide">
+        <label for="{{form.first_name.id_for_label}}">{{form.first_name.label}}
+          <i class="im im-icon-MaleFemale"></i><span>*</span>
+          {{form.first_name}}
+          <small class="text-error">{{form.first_name.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.last_name.id_for_label}}">{{form.last_name.label}}
+          <i class="im im-icon-MaleFemale"></i><span>*</span>
+          {{form.last_name}}
+          <small class="text-error">{{form.last_name.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.username.id_for_label}}">{{form.username.label}}
+          <i class="im im-icon-Male"></i><span>*</span>
+          {{form.username}}
+          <small class="text-primary">{{form.username.help_text}}</small>
+          <small class="text-error">{{form.username.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.email.id_for_label}}">{{form.email.label}}
+          <i class="im im-icon-Mail"></i><span>*</span>
+          {{form.email}}
+          <small class="text-primary">{{form.email.help_text}}</small>
+          <small class="text-error">{{form.email.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.phone_number.id_for_label}}">{{form.phone_number.label}}
+          <i class="im im-icon-Telephone-2"></i><span>*</span>
+          {{form.phone_number}}
+          <small class="text-primary">in this format: +234 1234567890</small>
+          <small class="text-error">{{form.phone_number.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.postcode.id_for_label}}">{{form.postcode.label}}
+          <i class="im im-icon-Telephone-2"></i><span>*</span>
+          {{form.postcode}}
+          <small class="text-primary">this is essential to pinpoint your geographical location and aid in your verification later.</small>
+          <small class="text-error">{{form.postcode.help_text}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.account_type.id_for_label}}">{{form.account_type.label}}
+          <i class="im im-icon-Mens"></i><span>*</span>
+          {{form.account_type}}
+          <small class="text-primary">{{form.account_type.help_text}}</small>
+          <small class="text-error">{{form.account_type.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.password1.id_for_label}}">{{form.password1.label}}
+          <i class="im im-icon-Password-Field"></i><span>*</span>
+          {{form.password1}}
+          <small class="text-primary">{{form.password1.help_text}}</small>
+          <small class="text-error">{{form.password1.errors}}</small>
+        </label>
+      </p>
+      <p class="form-row-wide">
+        <label for="{{form.password2.id_for_label}}">{{form.password2.label}}
+          <i class="im im-icon-Password-Field"></i><span>*</span>
+          {{form.password2}}
+          <small class="text-primary">{{form.password2.help_text|safe}}</small>
+          <small class="text-error">{{form.password2.errors}}</small>
+        </label>
+      </p>
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+      <br>
+      <br>
+      <p class="form-row-wide">
+        <label for="{{form.accept_terms.id_for_label}}" class="rememberme">
+        {{form.accept_terms}}
+        <small class="text-primary">{{form.accept_terms.help_text|safe}}</small>
+        <small class="text-error">{{form.accept_terms.errors}}</small>
+        
+        {{form.accept_terms.label}}</label>
+
+        <small>Read our <a href="">terms and condition</a> and <a href="">privacy policies</a> before accepting these terms to ensure you are in the know about how we use your information to provide you better services.</small>
+
+        <button class="button border margin-top-10 btn-block" type="submit">{% translate "Sign In" %}</button>
+        
+      </p>
+    </form>
+  </div>
+</div>
+{% endblock %}

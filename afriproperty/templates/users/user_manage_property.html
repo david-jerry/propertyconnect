@@ -1,0 +1,54 @@
+{% extends "users/base.html" %}
+{% load static crispy_forms_tags humanize %}
+
+{% block title %}My Property Ads{% endblock %}
+{% block can_link %}{% url 'users:properties' %}{% endblock %}
+
+{% block sub_title %}Manage Properties{% endblock sub_title %}
+{% block breadcrumb %}Properties{% endblock breadcrumb %}
+
+
+
+
+
+{% block inner %}
+<div class="col-md-8">
+    <table class="manage-table responsive-table">
+
+        <tr>
+            <th><i class="fa fa-file-text"></i> Property</th>
+            <th class="expire-date"><i class="fa fa-calendar"></i> Posted Date</th>
+            <th></th>
+        </tr>
+
+        {% for obj in objects %}
+        <!-- Item #1 -->
+        <tr>
+            <td class="title-container">
+                <img src="{% if obj.get_image_url %}{{obj.get_image_url}}{% else %}{% static 'images/listing-02.jpg' %}{% endif %}" alt="">
+                <div class="title">
+                    <h4><a href="{{obj.get_absolute_url}}">{{obj.property_title}}</a></h4>
+                    <span>{{obj.property_location}} </span>
+                    <span class="table-property-price">${{obj.property_price}} / {{obj.property_price_type}}</span>
+                </div>
+            </td>
+            <td class="expire-date">{{obj.created|naturalday}}</td>
+            <td class="action">
+                <a href="#"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="#"><i class="fa  fa-eye-slash"></i> Hide</a>
+                <a href="#" class="delete"><i class="fa fa-remove"></i> Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <!-- Item #2 -->
+        <tr>
+            <td class="title-container" colspan="3">
+                No Posted ads yet
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url 'property:create' %}" class="margin-top-40 margin-bottom-55 button">Submit New Property</a>
+</div>
+
+{% endblock inner %}
