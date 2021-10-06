@@ -141,7 +141,7 @@ class Tip(TimeStampedModel):
             str: URL for blog detail.
 
         """
-        return reverse("tip:detail", kwargs={"slug": self.slug})
+        return reverse("tips:detail", kwargs={"slug": self.slug})
 
 
     def get_update_url(self):

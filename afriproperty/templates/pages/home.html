@@ -30,7 +30,7 @@
               <div class="search-type" id="id_property_status">
                 <label class="active"><input class="first-tab" id="id_property_status_1" name="property_status" type="radio" value="Buy">Buy</label>
                 <label><input id="id_property_status_2" name="property_status" type="radio" value="Rent">Rent</label>
-                <label><input id="id_property_status_3" name="property_status" type="radio" value="Develop">Develop</label>
+                <label><input id="id_property_status_3" name="property_status" type="radio" value="Develop">Land</label>
                 <label><input id="id_property_status_4" name="property_status" type="radio" value="Shortlet">Shortlet</label>
                 <div class="search-type-arrow"></div>
                 {{filter.form.property_status.errors}}
@@ -368,7 +368,7 @@
 					<!-- Content -->
 					<div class="post-content">
 						<h3><a href="{{tip.get_absolute_url}}">{{tip.title}}</a></h3>
-						<p>{{tip.tip_content|truncatechars:250}}</p>
+						<p>{{tip.tip_content|truncatechars:150|safe}}</p>
 
 						<a href="{{tip.get_absolute_url}}" class="read-more">Read More <i class="fa fa-angle-right"></i></a>
 					</div>

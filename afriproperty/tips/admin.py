@@ -31,9 +31,11 @@ class PropertyAdmin(admin.ModelAdmin, ExportCsvMixin):
     class Meta:
         model = Tip
 
+
     def image(self, obj):
+        print(obj)
         return mark_safe(
-            f"<img src='{obj.get_image_url}' height='80' />"
+            "<img src='" + str(obj.get_image_url) + "' height='100' />"
         )
 
     def save_model(self, request, obj, form, change):
