@@ -279,4 +279,4 @@ afriproperty/media/
 .ipython/
 .env
 .envs/*
-!.envs/.local/
+!.envs/.local/.postgres
