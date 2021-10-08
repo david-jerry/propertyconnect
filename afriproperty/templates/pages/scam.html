@@ -1,0 +1,101 @@
+{% extends 'pages/base_form.html' %}
+{% load static humanize %}
+
+{% block title %}Report Issues - {{ block.super }}{% endblock title %}
+{% block desc %}We are kingly interested in provifing you with a safe enviroment to search, find and inspect any of our listed property. However we cannot do that alone. If you find any suspicious activity or error from any of our agents, please do feel free to report them here immediately.{% endblock desc %}
+{% block author %}{{ block.super }}{% endblock author %}
+{% block kw %}property connect issues report, properties contact, purchase properties in nigeria, nigeria properties, affordable properties in nigeria{% endblock %}
+{% block nkw %}{% endblock %}
+{% block can_link %}{% url 'report' %}{% endblock %}
+{% block og_url %}{% url 'report' %}{% endblock %}
+{% block og_desc %}We are kingly interested in provifing you with a safe enviroment to search, find and inspect any of our listed property. However we cannot do that alone. If you find any suspicious activity or error from any of our agents, please do feel free to report them here immediately.{% endblock %}
+{% block og_type %}website{% endblock %}
+{% block twitter_title %}Report Issues  - Property Connect Nigeria LTD{% endblock %}
+
+
+{% block inner %}
+<!-- Contact Details -->
+<div class="col-md-4">
+
+    <h4 class="headline margin-bottom-30">Find Us There</h4>
+
+    <!-- Contact Details -->
+    <div class="sidebar-textbox">
+        <p>Our support team will be willing to hear from you. Please be polite to them!</p>
+
+        <ul class="contact-details">
+            <li><i class="im im-icon-Phone-2"></i> <strong>Phone:</strong> <span><a  href="tel://+2348036497473"> (234) 803-649-7473</a> </span></li>
+            <li><i class="im im-icon-Fax"></i> <strong>Fax:</strong> <span><a  href="fax://+2348036497473"> (234) 803-649-7473</a> </span></li>
+            <li><i class="im im-icon-Globe"></i> <strong>Web:</strong> <span><a href="https://www.propertyconnect.com">www.propertyconnect.com</a></span></li>
+            <li><i class="im im-icon-Envelope"></i> <strong>E-Mail:</strong> <span><a
+                        href="mailto://scam@propertyconnect.com">scam@propertyconnect.com</a></span></li>
+        </ul>
+    </div>
+
+</div>
+
+<!-- Contact Form -->
+<div class="col-md-8">
+
+    <section id="contact">
+        <h4 class="headline margin-bottom-35">Report an Issue/Scam Form</h4>
+
+        <form method="post" action="{% url 'report' %}" autocomplete="on">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            {{ form.source.errors }}
+            {{ form.source }}
+            <div class="row">
+                <div class="col-md-4">
+                    <div>
+                        <input pattern="^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$" name="from_email" type="email" id="id_from_email" placeholder="Your Email Address" required="required" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div>
+                        <input name="subject" type="text" id="id_subject" placeholder="Subject" required="required" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div>
+                        <input name="complainer_username" type="text" id="id_complainer_username" placeholder="Your Username" required="required" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div>
+                        <input name="agent_phone" type="phone" id="id_agent_phone" placeholder="+2347023456789" required="required" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div>
+                        <input name="agent_company" type="text" id="id_agent_company" placeholder="Erring Agent Company Name" required="required" />
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div>
+                        <input name="agent_username" type="text" id="id_agent_username" placeholder="Erring Agent UserName" required="required" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="margin-bottom-35">
+                <textarea name="message" cols="40" rows="3" id="id_message" spellcheck="true"
+                    required="required" placeholder="I will like to lodge a complaint against the following users below. Please investigate them as they had  done so so and so to me on this day by doing so and so. Thank you"></textarea>
+            </div>
+
+            <input type="submit" class="submit button" id="submit" value="Lodge Report" />
+
+        </form>
+    </section>
+</div>
+<!-- Contact Form / End -->
+
+{% endblock inner %}

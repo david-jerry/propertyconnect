@@ -1,0 +1,75 @@
+{% load static %}
+
+<!-- Footer
+================================================== -->
+<div id="footer" class="sticky-footer">
+	<!-- Main -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-5 col-sm-6">
+				<img class="footer-logo" src="{% static 'images/logo.png' %}" alt="">
+				<br><br>
+				<p>Property Connect is a fast growing reputable realtor with links all over
+					Nigeria utilizing ICT to deliver real estate business in an easy, fast, reliable
+					manner to make our investment yield commensurate value.</p>
+			</div>
+
+			<div class="col-md-4 col-sm-6 ">
+				<h4>Helpful Links</h4>
+				<ul class="footer-links">
+					<li><a href="{% url 'account_login' %}">Login</a></li>
+					<li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+					{% if request.user.is_authenticated %}
+					<li><a href="{% url 'users:detail' request.user.username %}">My Account</a></li>
+					{% endif %}
+					<li><a href="#">Terms & Condition</a></li>
+					<li><a href="#">Privacy Policy</a></li>
+				</ul>
+
+				<ul class="footer-links">
+					<li><a href="#">FAQ</a></li>
+					<li><a href="{% url 'tips:list' %}">Blog</a></li>
+					<li><a href="{% url 'enquire' %}">Enquire</a></li>
+					<li><a href="{% url 'partners' %}">Partnership</a></li>
+					<li><a href="{% url 'report' %}">Report Scam</a></li>
+				</ul>
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="col-md-3  col-sm-12">
+				<h4>Contact Us</h4>
+				<div class="text-widget">
+					<span>22 Monrovian Cresent, Wuse II 904101, Abuja, Nigeria.</span> <br>
+					Phone: <span> <a href="tel://+2348036497473"> (234) 803-649-7473</a> </span><br>
+					E-Mail: <span> <a href="mailto://office@propertyconnect.ng"> office@propertyconnect.ng</a>
+					</span><br>
+				</div>
+
+				<ul class="social-icons margin-top-20">
+					<li><a class="facebook" href="https://www.facebook.com/propertyconnec8/"><i class="icon-facebook"></i></a></li>
+					<li><a class="instagram" href="https://www.instagram.com/propertyconnec8/"><i class="icon-instagram"></i></a></li>
+					<li><a class="linkedin" href="#"><i class="icon-linkedin"></i></a></li>
+				</ul>
+
+			</div>
+
+		</div>
+
+		<!-- Copyright -->
+		<div class="row">
+			<div class="col-md-12">
+				<div class="copyrights">&copy; Copyright 2019
+					<script>new Date().getFullYear() > 2019 && document.write("-" + new Date().getFullYear());</script>,
+					Property Connect.. All Rights Reserved.
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+<!-- Footer / End -->
+
+
+<!-- Back To Top Button -->
+<div id="backtotop"><a href="#"></a></div>

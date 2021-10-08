@@ -1,0 +1,124 @@
+{% extends "users/base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block title %}{{ object.fullname }} Account{% endblock %}
+{% block can_link %}{% url 'users:profile' %}{% endblock %}
+
+{% block sub_title %}{{object.fullname}} Profile{% endblock sub_title %}
+{% block breadcrumb %}Profile{% endblock breadcrumb %}
+
+{% block inner %}
+<div class="col-md-8">
+  {% if request.user.username == object.username %}
+  <form method="post" action="{% url 'users:profile' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    {{ form.source.errors }}
+    {{ form.source }}
+
+    <div class="row">
+      <div class="col-md-8 my-profile">
+        <h4 class="margin-top-0 margin-bottom-10">My Account</h4>
+        <div class="row row-with-forms">
+          <div class="col-md-6">
+            <label for="id_first_name">Your FirstName</label>
+            <input {% if object.first_name %}readonly{% endif %} id="id_first_name" maxlength="150" name="first_name" value="{% if object.first_name %}{{object.first_name}}{% endif %}" type="text">
+            <small>{{form.first_name.errors}}</small>
+          </div>
+  
+          <div class="col-md-6">
+            <label for="id_last_name">Your LastName</label>
+            <input {% if object.last_name %}readonly{% endif %} id="id_last_name" maxlength="150" name="last_name" value="{% if object.last_name %}{{object.last_name}}{% endif %}" type="text">
+            <small>{{form.last_name.errors}}</small>
+          </div>
+
+          <div class="col-md-12">
+            <label class="requiredField" for="id_username">Your Username</label>
+            <input {% if object.username %}readonly{% endif %} id="id_username" maxlength="150" name="username" required value="{% if object.username %}{{object.username}}{% endif %}" type="text">
+            <small>{{form.username.errors}}</small>
+          </div>
+
+          <div class="col-md-12">
+            <label for="id_email">Your Email</label>
+            <input {% if object.email %}readonly{% endif %} id="id_email" maxlength="150" name="email" value="{% if object.email %}{{object.email}}{% endif %}" type="email">
+            <small>{{form.email.errors}}</small>
+          </div>
+
+          <div class="col-md-6">
+            <label class="requiredField" for="id_phone_number">Your Phone Number</label>
+            <input required id="id_phone_number" maxlength="16" name="phone_number" value="{% if object.phone_number %}{{object.phone_number}}{% endif %}" type="text">
+            <small>{{form.phone_number.errors}}</small>
+          </div>
+
+          <div class="col-md-6">
+            <label for="id_postcode">Your Postal Code</label>
+            <input id="id_postcode" maxlength="8" name="postcode" value="{% if object.postcode %}{{object.postcode}}{% endif %}" type="email">
+            <small>{{form.postcode.errors}}</small>
+          </div>
+
+        </div>
+
+        <h4 class="margin-top-0 margin-bottom-10 margin-top-55">Social Accounts</h4>
+        <div class="row row-with-forms">
+          <div class="col-md-12">
+            <label for="id_linkedin">Your Linkedin</label>
+            <input placeholder="https://www.linkedin.com/in/username/" {% if object.linkedin %}readonly{% endif %} id="id_linkedin" maxlength="200" name="linkedin" value="{% if object.linkedin %}{{object.linkedin}}{% endif %}" type="url">
+            <small>{{form.linkedin.errors}}</small>
+          </div>
+  
+          <div class="col-md-12">
+            <label for="id_facebook">Your Facebook</label>
+            <input placeholder="https://www.facebook.com/yourname/" {% if object.facebook %}readonly{% endif %} id="id_facebook" maxlength="200" name="facebook" value="{% if object.facebook %}{{object.facebook}}{% endif %}" type="url">
+            <small>{{form.facebook.errors}}</small>
+          </div>
+
+          <div class="col-md-12">
+            <label for="id_instagram">Your Instagram</label>
+            <input placeholder="https://www.instagram.com/username/" {% if object.instagram %}readonly{% endif %} id="id_instagram" maxlength="200" name="instagram" value="{% if object.instagram %}{{object.instagram}}{% endif %}" type="url">
+            <small>{{form.instagram.errors}}</small>
+          </div>
+        </div>
+             
+      </div>
+      
+      <!-- Action buttons -->
+      <div class="col-md-4">
+
+        <div class="edit-profile-photo">
+          {% if object.agentprofile.verified %}
+          <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i class="fa fa-certificate text-success"></i> </span>
+          <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i class="fa fa-check text-warning"></i> </span>
+          {% endif %}
+          <img src="{% if object.image %}{{object.image.url}}{% else %}{% static 'images/agent-02.jpg' %}{% endif %}" alt="{{object.fullname}} profile image">
+
+          {% if object == request.user %}
+          <div class="change-photo-btn">
+            <div class="photoUpload">
+                
+                <span><i class="fa fa-upload"></i> Upload Photo</span>
+                <input id="id_image" name="image" required accept="image/*" type="file" class="upload" />
+                
+              </div><!-- Your Stuff: Custom user template urls -->
+          </div>
+          {% endif %}
+        </div>
+        <small>{{form.instagram.errors}}</small>
+        <small class="form-text text-muted" id="hint_id_image text-primary">image size: 300x300</small>
+
+
+      </div> 
+      <!-- End Action buttons -->
+    </div>
+
+
+    <button type="submit" class="button border margin-top-10 margin-bottom-55 btn-block">Update</button>
+
+  </form>
+  {% endif %}
+
+  {% if user != object %}
+
+  {% endif %}
+</div>
+{% endblock inner %}

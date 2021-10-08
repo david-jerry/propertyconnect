@@ -1,0 +1,170 @@
+{% extends "users/base.html" %}
+{% load static crispy_forms_tags %}
+
+{% block title %}Notification Settings{% endblock %}
+{% block can_link %}{% url 'users:notification' %}{% endblock %}
+
+{% block sub_title %}Notification Settinge{% endblock sub_title %}
+{% block breadcrumb %}Notification{% endblock breadcrumb %}
+
+{% block inner %}
+<div class="col-md-8">
+
+
+  <div class="row">
+    <form method="post" action=".">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {{ form.source.errors }}
+      {{ form.source }}
+
+      <div class="col-md-12 my-profile">
+        <h4 class="margin-top-0 margin-bottom-10">My Notification Setting</h4>
+        <div class="row row-with-forms">
+          <div class="col-md-12 checkboxes one-in-row">
+            {{form.property_request}}
+            <label for="{{form.property_request.id_for_label}}">Get notified when a property has been requested
+              for</label>
+            <small>{{form.property_request.errors}}</small>
+            <small>{{form.property_request.help_text}}<br></small>
+
+            <br>
+
+            {{form.direct_message}}
+            <label for="{{form.direct_message.id_for_label}}">Receive Direct Messaged</label>
+            <small>{{form.direct_message.errors}}</small>
+            <small>{{form.direct_message.help_text}}<br></small>
+
+            <br>
+
+            {{form.email_notification}}
+            <label for="{{form.email_notification.id_for_label}}">Get notified by Emails</label>
+            <small>{{form.email_notification.errors}}</small>
+            <small>{{form.email_notification.help_text}}<br></small>
+
+            <br>
+
+            {{form.send_newsletter}}
+            <label for="{{form.send_newsletter.id_for_label}}">Receive transactional updates</label>
+            <small>{{form.send_newsletter.errors}}</small>
+            <small>We will be sending promotional and transactional updates to your verified email address if you select
+              this. Emails like "Purchase a house today and get 20% discount" is a fitting example of what we mean by
+              promotional emails.<br></small>
+          </div>
+        </div>
+        <button type="submit" class="button border margin-top-10 margin-bottom-55 btn-block">Update</button>
+
+    </form>
+
+  </div>
+</div>
+{% endblock inner %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<form method="post" action=".">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  {{ form.source.errors }}
+  {{ form.source }}
+  <div class="edit-profile-photo">
+    {% if object.verified %}
+    <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i
+        class="fa fa-certificate text-success"></i> </span>
+    <span style="top:-26px !important; font-size:7rem; position:absolute; left:-24px;"><i
+        class="fa fa-check text-warning"></i> </span>
+    {% endif %}
+    <img
+      src="{% if object.user.image %}{{object.user.image.url}}{% else %}{% static 'images/agent-02.jpg' %}{% endif %}"
+      alt="{{object.user.fullname}} profile image">
+
+    {% if object.user == request.user %}
+    <div class="change-photo-btn">
+      <div class="photoUpload">
+
+        <span><i class="fa fa-upload"></i> Upload Photo</span>
+        <input id="id_image" name="image" accept="image/*" type="file" class="upload" />
+
+      </div><!-- Your Stuff: Custom user template urls -->
+    </div>
+    {% endif %}
+  </div>
+  <small>{{form.image.errors}}</small>
+  <small class="form-text text-muted" id="hint_id_image text-primary">image size: 300x300</small>
+
+  <button type="submit" class="button border margin-top-10 margin-bottom-55 btn-block">Update</button>
+
+</form>
+
+</div>

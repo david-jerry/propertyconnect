@@ -1,0 +1,656 @@
+{% extends "property/base.html" %}
+{% load static humanize %}
+
+{% block title %}{{object.property_title}} Properties For Rent - {{ block.super }}{% endblock title %}
+{% block desc %}We have {{object.property_detail|truncatechars:150}}{% endblock desc %}
+{% block author %}{{object.super}}, {{ object.property_agent.agentprofile.company_name }}{% endblock author %}
+{% block kw %}{{ object.property_agent.agentprofile.company_name }}, {{object.property_title}}, properties on property
+connect, PFR, want to rent, property connect, properties, purchase properties in nigeria, nigeria properties, affordable
+properties in nigeria{% endblock %}
+{% block nkw %}{{ object.property_agent.agentprofile.company_name }}, {{object.property_title}}{% endblock %}
+{% block can_link %}{% url 'property:detail' object.slug %}{% endblock %}
+{% block og_url %}{% url 'property:detail' object.slug %}{% endblock %}
+{% block og_desc %}{{object.property_detail|truncatechars:150}}{% endblock %}
+{% block og_type %}post{% endblock %}
+{% block twitter_title %}{{object.property_title}} Properties For Rent - Property Connect Nigeria LTD{% endblock %}
+
+{% block header_scripts %}
+<script defer src="https://maps.google.com/maps/api/js?key={{API_KEY}}&sensor=False"></script>
+{{ block.super }}
+<script defer src="{% static 'js/moment.min.js' %}"></script>
+<script defer src="{% static 'js/daterangepicker.js' %}"></script>
+
+{% endblock header_scripts %}
+
+{% block modal %}
+<!-- Compare Properties Widget
+  ================================================== -->
+<div class="compare-slide-menu" id="rcm">
+
+  <div class="csm-trigger"></div>
+
+  <div class="csm-content">
+    <h4>Compare Properties <div class="csm-mobile-trigger"></div>
+    </h4>
+
+ 
+    <div class="csm-properties">
+        <!-- Property -->
+        <div class="listing-item compact" v-if="compared_property.includes({{object.id}})">
+            <a href="{{object.get_absolute_url}}" class="listing-img-container">
+                <div class="remove-from-compare" v-if="!compared_property.includes({{object.id}})" @click="removeCompare({{object.id}})"><i class="fa fa-close"></i></div>
+                <div class="listing-badges">
+                <span>{{object.property_status}}</span>
+                </div>
+                <div class="listing-img-content">
+                <span class="listing-compact-title">{{object.title}} <i>$420,000</i></span>
+                </div>
+                <img src="{{object.get_image_url}}" alt="compared property in {{object.status}} image">
+            </a>
+        </div>
+          
+      {% for obj in compared_properties %}
+      <!-- Property -->
+      <div class="listing-item compact">
+        <a href="{{obj.get_absolute_url}}" class="listing-img-container">
+          <div class="remove-from-compare" v-if="!compared_property.includes({{object.id}})"  @click="removeCompare({{obj.id}})"><i class="fa fa-close"></i></div>
+          <div class="listing-badges">
+            <span>{{obj.property_status}}</span>
+          </div>
+          <div class="listing-img-content">
+            <span class="listing-compact-title">{{obj.property_title}} <i>$420,000</i></span>
+          </div>
+          <img src="{{obj.get_image_url}}" alt="compared property in {{obj.property_status}} image">
+        </a>
+      </div>
+      {% empty %}
+      <div class="listing-item compact p-5">
+        <p class="text-center text-primary">Add Property for comparison here</p>
+      </div>
+      {% endfor %}  
+    </div>
+
+
+    {% if compared_properties %}
+    <div class="csm-buttons">
+      <a href="{% url 'property:compare' %}" class="button">View Properties</a>
+      <a href="#" class="button reset">Reset</a>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+<!-- Compare Properties Widget / End -->
+{% endblock modal %}
+
+{% block banner %}
+<!-- Titlebar
+================================================== -->
+<div id="titlebar" class="property-titlebar margin-bottom-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
+                <a href="{% url 'property:list' %}" class="back-to-listings"></a>
+                <div class="property-title">
+                    <h2>{{object.property_title}} <span class="property-badge">{{object.property_status}}</span></h2>
+                    <span>
+                        <a href="#location" class="listing-address">
+                            <i class="fa fa-map-marker"></i>
+                            {{object.property_location}}
+                        </a>
+                    </span>
+                </div>
+
+                <div class="property-pricing">
+                    <div class="property-price">₦{% if object.property_price_type == "Sq/Ft" %}{{object.sqft_total}}
+                        {% else %}{{object.property_price}}{% endif %}</div>
+                    <div class="sub-price">{% if object.property_price_type == "Sq/Ft" %}₦{{object.property_price}} /
+                        {% endif %} {{object.property_price_type}}</div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Slider -->
+<div class="fullwidth-property-slider margin-bottom-50">
+    {% if object.get_all_images %}
+    {% for img in object.get_all_images %}
+    <a href="{{img.image.url}}" data-background-image="{{img.image.url}}" class="item mfp-gallery"></a>
+    {% empty %}
+    <a href="{% static 'images/single-property-01.jpg' %}"
+        data-background-image="{% static 'images/single-property-01.jpg' %}" class="item mfp-gallery"></a>
+    {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block inner %}
+<!-- Property Description -->
+<div class="col-lg-8 col-md-7">
+    <div class="property-description">
+
+        <!-- Main Features -->
+        <ul class="property-main-features">
+            <li>Area <span>{{object.total_area}} sq ft</span></li>
+            <li>Rooms <span>{{object.property_parlors}}</span></li>
+            <li>Bedrooms <span>{{object.property_bedrooms}}</span></li>
+            <li>Bathrooms <span>{{object.property_bathrooms}}</span></li>
+        </ul>
+
+
+        <!-- Description -->
+        <h3 class="desc-headline">Description</h3>
+        <div class="show-more">
+            {{object.property_detail|safe}}
+
+            <a href="#" class="show-more-button">Show More <i class="fa fa-angle-down"></i></a>
+        </div>
+
+        <!-- Details -->
+
+        <!-- Features -->
+        <h3 class="desc-headline">Features</h3>
+        <ul class="property-features checkboxes margin-top-0">
+            <li>{{object.property_age}}</li>
+            {% if object.property_age %}
+            {% for ft in object.property_features.all %}
+            <li>{{ft}}</li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+
+
+        <!-- Floorplans -->
+        <h3 class="desc-headline no-border">Floorplans</h3>
+        <!-- Accordion -->
+        <div class="style-1 fp-accordion">
+            <div class="accordion">
+                {% if object.get_all_floors %}
+                {% for fl in object.get_all_floors %}
+                <h3>{{fl.type}} <span>{{fl.floor_area}} sq ft</span> <i class="fa fa-angle-down"></i> </h3>
+                <div>
+                    <a class="floor-pic mfp-image" href="{{fl.image.url}}">
+                        <img src="{{fl.image.url}}" alt="">
+                    </a>
+                    <p>{{fl.floor_detail|safe}}</p>
+                </div>
+                {% endfor %}
+                {% else %}
+                <h3>None</h3>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- Video -->
+        <h3 class="desc-headline no-border">Video</h3>
+        <div class="responsive-iframe">
+            <iframe width="560" height="315"
+                src="{{object.get_video_url}}" frameborder="0"
+                allowfullscreen></iframe>
+        </div>
+
+        <!-- Location -->
+        <h3 class="desc-headline no-border" id="location">Location</h3>
+        <div id="propertyMap-container">
+            <div id="propertyMap" data-latitude="{{object.property_latitude}}" data-longitude="{{object.property_longitude}}"></div>
+            <a href="#" id="streetView">Street View</a>
+        </div>
+
+
+        <!-- Similar Listings Container -->
+        <h3 class="desc-headline no-border margin-bottom-35 margin-top-60">Similar Properties</h3>
+
+        <!-- Layout Switcher -->
+
+        <div class="layout-switcher hidden"><a href="#" class="list"><i class="fa fa-th-list"></i></a></div>
+        <div class="listings-container list-layout">
+
+            {% for rl in object.get_related_property %}
+            <!-- Listing Item -->
+            <div class="listing-item">
+
+                <a href="{{rl.get_absolute_url}}" class="listing-img-container">
+
+                    <div class="listing-badges">
+                        <span>{{rl.property_status}}</span>
+                    </div>
+
+                    <div class="listing-img-content">
+                        <span class="listing-price">{% if rl.property_price_type == "Sq/Ft" %}₦{{rl.property_price}} /
+                            <i>{{rl.property_price_type}}</i>{% else %} ₦{{rl.property_price}} <i>{{rl.property_price_type}}</i>{% endif %}</span>
+                        <span class="like-icon"></span>
+                    </div>
+
+                    <img src="{{rl.get_image_url}}" alt="{{rl.property_title}} cover image">
+
+                </a>
+
+                <div class="listing-content">
+
+                    <div class="listing-title">
+                        <h4><a href="{{rl.get_absolute_url}}">{{rl.property_title}}</a></h4>
+                        <a href="https://maps.google.com/maps?q={{rl.formated_address}},+Nigeria&hl=en&t=v&hnear={{rl.formated_closest_address}},+Nigeria"
+                            class="listing-address popup-gmaps">
+                            <i class="fa fa-map-marker"></i>
+                            {{rl.property_address}}
+                        </a>
+
+                        <a href="#" class="details button border">Details</a>
+                    </div>
+
+                    <ul class="listing-details">
+                        <li>{{rl.total_area}} sq ft</li>
+                        <li>{{rl.property_bedrooms}} Bedroom</li>
+                        <li>{{rl.property_bathrooms}} Bathrooms</li>
+                        <li>{{rl.property_parlors}} Parlors</li>
+                    </ul>
+
+                    <div class="listing-footer">
+                        <a href="{{rl.property_agent.get_absolute_url}}"><i class="fa fa-user"></i> {{rl.property_agent.fullname}}</a>
+                        <span><i class="fa fa-calendar-o"></i> {{rl.created|naturalday}}</span>
+                    </div>
+
+                </div>
+                <!-- Listing Item / End -->
+
+            </div>
+            <!-- Listing Item / End -->
+            {% empty %}
+            <!-- Listing Item -->
+            <div class="listing-item">
+
+                <div class="listing-content p-5">
+
+                    No Related Listing
+
+                </div>
+                <!-- Listing Item / End -->
+
+            </div>
+            <!-- Listing Item / End -->
+            {% endfor %}
+        </div>
+        <!-- Similar Listings Container / End -->
+
+    </div>
+</div>
+<!-- Property Description / End -->
+
+
+<!-- Sidebar -->
+<div class="col-lg-4 col-md-5">
+    <div class="sidebar sticky right">
+        
+        <!-- Widget -->
+        <div class="widget margin-bottom-30">
+            {% if request.user.is_authenticated %}
+            <button id="like-{{object.id}}" class="widget-button with-tip {% for bookmark in request.user.bookmarkuser.all %}{% if bookmark.property.id == object.id %}liked{% endif %}{% endfor %}" @click="bookmark({{object.id}})" v-if="!bookmarked_property.includes({{object.id}})" data-tip-content="Add/Remove Bookmarks"><i class="fa fa-star-o"></i></button>
+            <button id="unlike-{{object.id}}" class="widget-button with-tip {% for bookmark in request.user.bookmarkuser.all %}{% if bookmark.property.id == object.id %}liked{% endif %}{% endfor %}" @click="bookmarked({{object.id}})" v-if="bookmarked_property.includes({{object.id}})" data-tip-content="Add/Remove Bookmarks"><i class="fa fa-star-o"></i></button>
+            {% endif %}
+            <button @click="compareProperty({{object.id}})" class="widget-button with-tip compare-widget-button" data-tip-content="Add to Compare"><i class="icon-compare"></i></button>
+            <div class="clearfix"></div>
+        </div>
+        <!-- Widget / End -->
+
+
+        <!-- Booking Widget -->
+        <div class="widget">
+
+            {% comment %}
+            <!-- Book Now -->
+            <div id="booking-widget-anchor" class="boxed-widget booking-widget margin-top-35">
+                <h3><i class="fa fa-calendar-check-o "></i> Booking</h3>
+                <form method="POST" action="" class="row with-forms  margin-top-0">
+                    {% csrf_token %}
+                    <!-- Date Range Picker - docs: http://www.daterangepicker.com/ -->
+                    <div class="col-lg-12">
+                        <input type="text" id="date-picker" placeholder="Date" readonly="readonly">
+                    </div>
+
+                    <!-- Panel Dropdown -->
+                    <div class="col-lg-12">
+                        <div class="panel-dropdown">
+                            <a href="#">Guests <span class="qtyTotal" name="qtyTotal">1</span></a>
+                            <div class="panel-dropdown-content">
+
+                                <!-- Quantity Buttons -->
+                                <div class="qtyButtons">
+                                    <div class="qtyTitle">Adults</div>
+                                    <input type="text" name="qtyInput" value="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Panel Dropdown / End -->
+
+                </form>
+
+                <!-- Book Now -->
+                <button type="submit" class="button book-now fullwidth margin-top-5">Request To Book</a>
+
+            </div>
+            <!-- Book Now / End -->
+            {% endcomment %}
+
+        </div>
+        <!-- Booking Widget / End -->
+
+        <!-- Widget -->
+        <div class="widget">
+
+            <!-- Agent Widget -->
+            <form id="booking-widget-anchor"  class="agent-widget booking-widget book-widget row with-forms  margin-top-0" method="POST" action="">
+                {% csrf_token %}
+                <div class="agent-title">
+                    <div class="agent-photo"><img src="{% if object.property_agent.image %}{{object.property_agent.image.url}}{% else %}{% static 'images/agent-avatar.jpg' %}{% endif %}" alt="" /></div>
+                    <div class="agent-details">
+                        <h4><a href="{{object.property_agent.get_absolute_url}}">{{object.property_agent.fullname}}</a></h4>
+                        <span><i class="sl sl-icon-call-in"></i>{{object.property_agent.phone_number}}</span>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <input type="text" placeholder="Your Email"
+                    pattern="^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$">
+                <input type="text" placeholder="Your Phone">
+                <textarea>I'm interested in this property [ID 123456] and I'd like to know more details.</textarea>
+                
+                <div class="col-lg-12">
+                    <input type="text" id="date-picker" placeholder="Date" readonly="readonly">
+                </div>
+
+
+                <!-- Panel Dropdown -->
+                <div class="col-lg-12">
+                    <div class="panel-dropdown">
+                        <a href="#">Guests <span class="qtyTotal" name="qtyTotal">1</span></a>
+                        <div class="panel-dropdown-content">
+
+                            <!-- Quantity Buttons -->
+                            <div class="qtyButtons">
+                                <div class="qtyTitle">Inspectors</div>
+                                <input type="text" name="qtyInput" value="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Panel Dropdown / End -->
+                <button class="button fullwidth margin-top-5">Send Message</button>
+            </form>
+            <!-- Agent Widget / End -->
+
+        </div>
+        <!-- Widget / End -->
+
+
+        <!-- Widget -->
+        <div class="widget">
+            <h3 class="margin-bottom-30 margin-top-30">Mortgage Calculator</h3>
+
+            <!-- Mortgage Calculator -->
+            <form action="javascript:void(0);" autocomplete="off" class="mortgageCalc" data-calc-currency="USD">
+                <div class="calc-input">
+                    <div class="pick-price tip" data-tip-content="Set This Property Price"></div>
+                    <input type="text" id="amount" name="amount" placeholder="Sale Price" required>
+                    <label for="amount" class="fa fa-usd"></label>
+                </div>
+
+                <div class="calc-input">
+                    <input type="text" id="downpayment" placeholder="Down Payment">
+                    <label for="downpayment" class="fa fa-usd"></label>
+                </div>
+
+                <div class="calc-input">
+                    <input type="text" id="years" placeholder="Loan Term (Years)" required>
+                    <label for="years" class="fa fa-calendar-o"></label>
+                </div>
+
+                <div class="calc-input">
+                    <input type="text" id="interest" placeholder="Interest Rate" required>
+                    <label for="interest" class="fa fa-percent"></label>
+                </div>
+
+                <button class="button calc-button" formvalidate>Calculate</button>
+                <div class="calc-output-container">
+                    <div class="notification success">Monthly Payment: <strong class="calc-output"></strong></div>
+                </div>
+            </form>
+            <!-- Mortgage Calculator / End -->
+
+        </div>
+        <!-- Widget / End -->
+
+        {% if object.get_featured_property %}
+        <!-- Widget -->
+        <div class="widget">
+            <h3 class="margin-bottom-35">Featured Properties</h3>
+
+            <div class="listing-carousel outer">
+                {% for fp in object.get_featured_property %}
+                <!-- Item -->
+                <div class="item">
+                    <div class="listing-item compact">
+
+                        <a href="{{fp.get_absolute_url}}" class="listing-img-container">
+
+                            <div class="listing-badges">
+                                <span class="featured">Featured</span>
+                                <span>{{fp.property_status}}</span>
+                            </div>
+
+                            <div class="listing-img-content">
+                                <span class="listing-compact-title">{{fp.property_title}} {% if rl.property_price_type == "Sq/Ft" %}<i>₦{{rl.property_price}} /
+                            {{rl.property_price_type}}</i>{% else %} <i>₦{{rl.property_price}} {{rl.property_price_type}}</i>{% endif %}</span>
+
+                                <ul class="listing-hidden-content">
+                                    <li>Area <span>{{fp.total_area}} sq ft</span></li>
+                                    <li>Parlors <span>{{fp.property_parlors}}</span></li>
+                                    <li>Beds <span>{{fp.property_bedrooms}}</span></li>
+                                    <li>Baths <span>{{fp.property_bathrooms}}</span></li>
+                                </ul>
+                            </div>
+
+                            <img src="{% if fp.get_image_url %}{{fp.get_image_url}}{% else %}{% static 'images/listing-01.jpg' %}{% endif %}" alt="{{fp.property_title}} cover image">
+                        </a>
+
+                    </div>
+                </div>
+                <!-- Item / End -->
+                {% endfor %}
+
+            </div>
+
+        </div>
+        <!-- Widget / End -->
+        {% endif %}
+
+    </div>
+</div>
+<!-- Sidebar / End -->
+
+{% endblock %}
+
+
+{% block inline_javascript %}
+<script>
+// Calendar Init
+$(function() {
+    $('#date-picker').daterangepicker({
+        "opens": "left",
+        // singleDatePicker: true,
+
+        // Disabling Date Ranges
+        isInvalidDate: function(date) {
+        // Disabling Date Range
+        var disabled_start = moment('09/02/2018', 'MM/DD/YYYY');
+        var disabled_end = moment('09/06/2018', 'MM/DD/YYYY');
+        return date.isAfter(disabled_start) && date.isBefore(disabled_end);
+
+        // Disabling Single Day
+        // if (date.format('MM/DD/YYYY') == '08/08/2018') {
+        //     return true; 
+        // }
+        }
+    });
+});
+
+// Calendar animation
+$('#date-picker').on('showCalendar.daterangepicker', function(ev, picker) {
+    $('.daterangepicker').addClass('calendar-animated');
+});
+$('#date-picker').on('show.daterangepicker', function(ev, picker) {
+    $('.daterangepicker').addClass('calendar-visible');
+    $('.daterangepicker').removeClass('calendar-hidden');
+});
+$('#date-picker').on('hide.daterangepicker', function(ev, picker) {
+    $('.daterangepicker').removeClass('calendar-visible');
+    $('.daterangepicker').addClass('calendar-hidden');
+});
+</script>   
+
+
+
+
+
+<!-- <script type="text/javascript">
+    new Vue({
+        el: "#pList",
+        delimiters: ["[[", "]]"],
+        data () {
+            return {
+                compared_property: [],
+                property: "{{object}}",
+                id: "{{object.id}}",
+                //isliked: false,
+                bookmarked_property: [{% if object.bookmarked %}{{object.id}},{% endif %}],
+            }
+        },
+        methods: {
+            bookmark(property_id) {
+                this.bookmarked_property.push(parseInt(property_id));
+                var property = {
+                    "property_id": property_id,
+                }
+    
+                fetch("/properties/add/bookmark/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-CSRFToken': '{{csrf_token}}'
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify(property)
+                })
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+    
+                const el = document.getElementById('like-' + property_id)
+                const el2 = document.getElementById('unlike-' + property_id)
+                const liked = "liked";const liked2 = "liked"
+                el.classList.toggle(liked);
+            },
+            bookmarked(property_id) {
+                this.bookmarked_property.pop(parseInt(property_id));
+                var property = {
+                    "property_id": property_id,
+                }
+    
+                fetch("/properties/remove/bookmark/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-CSRFToken': '{{csrf_token}}'
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify(property)
+                })
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+    
+                const el = document.getElementById('like-' + property_id)
+                const el2 = document.getElementById('unlike-' + property_id)
+                const liked = "liked";const liked2 = "liked"
+                el2.classList.remove(liked2);
+            },
+            compareProperty() {
+                var property = {
+                    "property": this.property,
+                    "property_id": this.id,
+                }
+
+                this.compared_property.push(parseInt(property.property_id))
+
+                fetch("/properties/add/compare/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-CSRFToken': '{{csrf_token}}'
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify(property)
+                })
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+        }
+    
+    }) 
+</script>
+
+<script type="text/javascript">
+    new Vue({
+        el: "#rcm",
+        delimiters: ["[[", "]]"],
+        data() {
+            return {
+                compared_property: [{% for object in compared_properties %}{% if object.compared %}{{object.id}}{% endif %},{% endfor %}]
+            }
+        },
+        methods: {
+            removeCompare(property_id) {
+                var property = {
+                    "property_id": property_id,
+                }
+
+                this.compared_property.push(parseInt(property_id))
+
+                fetch("/properties/remove/compare/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-CSRFToken': '{{csrf_token}}'
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify(property)
+                })
+                .then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            },
+        }
+    })
+</script> -->
+
+    
+{% endblock inline_javascript %}

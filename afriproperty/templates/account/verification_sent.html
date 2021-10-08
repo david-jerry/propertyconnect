@@ -1,0 +1,43 @@
+{% extends "account/base.html" %}
+{% load static i18n account socialaccount crispy_forms_tags %}
+
+{% block head_title %}
+{% translate "verify your email Address" %}
+{% endblock %}
+
+{% block kw %}
+property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria
+{% endblock %}
+
+{% block nkw %}
+{% endblock %}
+
+{% block can_link %}
+{https://www.propertyconnect.ng/accounts/confirm-email/}
+{% endblock %}
+
+
+
+
+
+{% block sub_title %}
+Verify Your Email Address
+{% endblock sub_title %}
+
+{% block breadcrumb %}
+confirm-email
+{% endblock breadcrumb %}
+
+{% block inner %}
+<div class="row">
+    <div class="col-md-8 col-sm-6 col-sm-offset-2 col-xs-12 col-md-offset-2">
+        <h1>{% translate "Verify Your E-mail Address" %}</h1>
+
+        <p>{% blocktranslate %}We have sent an e-mail to you for verification. Follow the link provided to finalize the
+            signup process. <a href="mailto://support@propertyconnect.ng">Please contact us</a> if you do not
+            receive it within a few minutes.{% endblocktranslate %}</p>
+
+        <a href="{% url 'home' %}" class="button medium">Return Home</a>
+    </div>
+</div>
+{% endblock %}

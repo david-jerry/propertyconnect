@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}
+{% block head_title %}
+{% endblock head_title %}
+{% endblock title %}
+
+
+{% block banner %}
+<!-- Titlebar
+================================================== -->
+<div id="titlebar">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<h2>{% block sub_title %}
+          
+        {% endblock sub_title %}</h2>
+				
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs">
+					<ul>
+						<li><a href="{% url 'home' %}">Home</a></li>
+						<li>{% block breadcrumb %}
+              
+            {% endblock breadcrumb %}</li>
+					</ul>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock banner %}
+
+{% block content %}
+<div class="container">
+	{% block inner %}
+	
+	{% endblock inner %}  
+	<div class="margin-top-55"></div>
+</div>
+{% endblock %}

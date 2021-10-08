@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block title %}{% endblock title %}
+{% block desc %}{% endblock desc %}
+{% block author %}{% endblock author %}
+{% block kw %}property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria{% endblock %}
+{% block nkw %}{% endblock %}
+{% block can_link %}{% endblock %}
+
+{% block header_scripts %}
+<!-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script> -->
+<script defer src="https://maps.google.com/maps/api/js?key={{API_KEY}}&sendor=false&amp;language=en"></script>
+<script defer type="text/javascript" src="{% static 'js/infobox.min.js' %}"></script>
+<script defer type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
+<script defer type="text/javascript" src="{% static 'js/maps2.js' %}"></script>
+{% endblock header_scripts %}
+
+
+{% block banner %}
+<!-- Titlebar
+================================================== -->
+<div class="contact-map margin-bottom-55">
+
+	<!-- Google Maps -->
+	<div class="google-map-container">
+		<div id="propertyMap" data-latitude="9.081499274870513" data-longitude="7.471733255746449"></div>
+		<a href="#" id="streetView">Street View</a>
+	</div>
+	<!-- Google Maps / End -->
+
+	<!-- Office -->
+	<div class="address-box-container">
+		<div class="address-container" data-background-image="{% static 'images/our-office.jpg' %}">
+			<div class="office-address">
+				<h3>Our Office</h3>
+				<ul>
+					<li>422 Monrovian Cresent,</li>
+					<li>Wuse II, Abuja, Nigeria 904101.</li>
+					<li>Phone <a class="text-warning" href="tel://+2348036497473"> (234) 803-649-7473</a> </li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</div>
+{% endblock banner %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% block inner %}{% endblock inner %}
+    </div>
+</div>
+<!-- Footer
+================================================== -->
+<div class="margin-top-55"></div>
+{% endblock %}
+
+{% block inline_javascript %}
+{% endblock inline_javascript %}

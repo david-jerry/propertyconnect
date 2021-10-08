@@ -1,0 +1,437 @@
+{% extends "base.html" %}
+{% load static humanize %}
+
+{% block kw %}property connect, properties, purchase properties in nigeria, nigeria properties, affordable properties in nigeria{% endblock %}
+{% block nkw %}{% endblock %}
+{% block can_link %}{% url 'home' %}{% endblock %}
+
+{% block banner %}
+<!-- Banner
+================================================== -->
+<div class="parallax" data-background="{% static 'images/lagos.jpg' %}" data-color="#36383e" data-color-opacity="0.45"
+  data-img-width="2500" data-img-height="1600">
+  <div class="parallax-content">
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+
+          <!-- Main Search Container -->
+          <div class="main-search-container">
+            <h2>Find your next home</h2>
+
+            <!-- Main Search -->
+            <form class="main-search-form" action="{% url 'property:search' %}" method="get">
+              {{ filter.form.non_field_errors }}
+
+              {{ filter.form.source.errors }}
+              {{ filter.form.source }}
+              <!-- Type -->
+              <div class="search-type" id="id_property_status">
+                <label class="active"><input class="first-tab" id="id_property_status_1" name="property_status" type="radio" value="Buy">Buy</label>
+                <label><input id="id_property_status_2" name="property_status" type="radio" value="Rent">Rent</label>
+                <label><input id="id_property_status_3" name="property_status" type="radio" value="Develop">Land</label>
+                <label><input id="id_property_status_4" name="property_status" type="radio" value="Shortlet">Shortlet</label>
+                <div class="search-type-arrow"></div>
+                {{filter.form.property_status.errors}}
+              </div>
+
+
+              <!-- Box -->
+              <div class="main-search-box">
+
+                <!-- Main Search Input -->
+                <div class="main-search-input larger-input">
+                  <input type="text" class="ico-01" id="autocomplete-input"
+                    placeholder="Enter address e.g. area, city or state" value="" name="property_title" />
+                  {{filter.form.property_title.errors}}
+                  <button class="button">Search</button>
+                </div>
+
+                <!-- Row -->
+                <div class="row with-forms">
+
+                  <!-- Property Type -->
+                  <div class="col-md-4">
+                    <select data-placeholder_text_multiple="Any Type" multiple="" name="property_type" class="chosen-select">
+                      <option value="Apartment">Apartment/Flat</option>
+                      <option value="House">Houses</option>
+                      <option value="Commercial">Commercial</option>
+                      <option value="Garage">Garage</option>
+                      <option value="Lot">Parking Lot</option>
+                      <option value="Garden">Garden/Recration</option>
+                      <option value="Plot">Land Plot</option>
+                    </select>
+                    {{filter.form.property_type.errors}}
+                  </div>
+
+
+                  <!-- Min Price -->
+                  <div class="col-md-4">
+
+                    <!-- Select Input -->
+                    <div class="select-input">
+                      <input type="text" id="id_property_price__gte" placeholder="Min Price" name="property_price__gte" data-unit="NGN">
+                      {{filter.form.property_price__gte.errors}}
+                    </div>
+                    <!-- Select Input / End -->
+
+                  </div>
+
+
+                  <!-- Max Price -->
+                  <div class="col-md-4">
+
+                    <!-- Select Input -->
+                    <div class="select-input">
+                      <input type="text" id="id_property_price__lte" placeholder="Max Price" name="property_price__lte" data-unit="NGN">
+                      {{filter.form.property_price__lte.errors}}
+                    </div>
+                    <!-- Select Input / End -->
+
+                  </div>
+
+                </div>
+                <!-- Row / End -->
+                <!-- Browse Jobs -->
+                <div class="adv-search-btn">
+                  Need more search options? <a href="{% url 'property:search' %}">Advanced Search</a>
+                </div>
+
+
+              </div>
+              <!-- Box / End -->
+
+            </form>
+            <!-- Main Search -->
+
+          </div>
+          <!-- Main Search Container / End -->
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock banner %}
+
+
+{% block content %}
+<!-- Content
+================================================== -->
+<div class="container">
+	<div class="row">
+	
+		<div class="col-md-12">
+			<h3 class="headline margin-bottom-25 margin-top-65">Newly Added</h3>
+		</div>
+		
+		<!-- Carousel -->
+		<div class="col-md-12">
+      	{% if recent_properties %}
+			<div class="carousel">
+				{% for pro in recent_properties %}
+				<!-- Listing Item -->
+				<div class="carousel-item">
+					<div class="listing-item">
+
+						<a href="{{pro.get_absolute_url}}" class="listing-img-container">
+
+							<div class="listing-badges">
+								{% if pro.featured %}<span class="featured">Featured</span>{% endif %}
+								<span>{{pro.property_status}}</span>
+							</div>
+
+							<div class="listing-img-content">
+								<span class="listing-price">₦{{pro.sqft_total}} <i>{{pro.property_price_type}}</i></span>
+								{% if request.user.is_authenticated %}
+								<span id="like-{{pro.id}}" class="like-icon with-tip {% for bookmark in request.user.bookmarkuser.all %}{% if bookmark.property.id == pro.id %}liked{% endif %}{% endfor %}" @click="bookmark({{pro.id}})" v-if="!bookmarked_property.includes({{pro.id}})" data-tip-content="Remove/Add Bookmarks"></span>
+								<span id="unlike-{{pro.id}}" class="like-icon with-tip {% for bookmark in request.user.bookmarkuser.all %}{% if bookmark.property.id == pro.id %}liked{% endif %}{% endfor %}" @click="bookmarked({{pro.id}})" v-if="bookmarked_property.includes({{pro.id}})" data-tip-content="Remove/Add Bookmarks"></span>
+								{% endif %}
+								<span class="compare-button with-tip" @click="compareProperty({{pro.id}})" data-tip-content="Add to Compare"></span>
+							</div>
+
+							<img src="{% if pro.get_image_url %}{{pro.get_image_url}}{% else %}{% static 'images/listing-02.jpg' %}{% endif %}" alt="{{pro.property_title}} image">
+
+						</a>
+						
+						<div class="listing-content">
+
+							<div class="listing-title">
+								<h4><a href="{{pro.get_absolute_url}}">{{pro.property_title}}</a></h4>
+								<a href="https://maps.google.com/maps?q={{pro.formated_address}},+{{pro.formated_state}}+Nigeria&hl=en&t=v&hnear={{pro.formated_closest_address}},+{{pro.formated_state}},+Nigeria" class="listing-address popup-gmaps">
+									<i class="fa fa-map-marker"></i>
+									{{pro.property_address}}, {{pro.property_state}}, Nigeria
+								</a>
+							</div>
+
+							<ul class="listing-features">
+								<li>Area <span>{{pro.property_area}} sq ft</span></li>
+								<li>Parlors <span>{{pro.property_parlors}}</span></li>
+								<li>Bedrooms <span>{{pro.property_bedrooms}}</span></li>
+								<li>Bathrooms <span>{{pro.property_bathrooms}}</span></li>
+							</ul>
+
+							<div class="listing-footer">
+								<a href="{{pro.property_agent.agentprofile.get_absolute_url}}"><i class="fa fa-user"></i> {{pro.property_agent}}</a>
+								<span><i class="fa fa-calendar-o"></i> {{pro.created|naturalday}}</span>
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+				<!-- Listing Item / End -->
+        {% endfor %}
+			</div>
+      {% else %}
+      No Property Has Been Listed Yet.{% if request.user.account_type == "Individual [Searching for property]" %}Please check back again{% elif request.user.is_authenticated %} <a href="{% url 'users:detail' request.user.username %}" class="button medium bg-danger">Create One Now</a> {% endif %}
+      {% endif %}
+		</div>
+		<!-- Carousel / End -->
+
+	</div>
+</div>
+
+<!-- Fullwidth Section -->
+<section class="fullwidth margin-top-105" data-background-color="#f7f7f7">
+
+	<!-- Box Headline -->
+	<h3 class="headline-box">What are you looking for?</h3>
+	
+	<!-- Content -->
+	<div class="container">
+		<div class="row">
+
+			<div class="col-md-3 col-sm-6">
+				<!-- Icon Box -->
+				<div class="icon-box-1">
+
+					<div class="icon-container">
+						<i class="im im-icon-Office"></i>
+						<div class="icon-links">
+							<a href="/properties/search/?property_status=Buy&property_state=&property_type=Apartment&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Sale</a>
+							<a href="/properties/search/?property_status=Rent&property_state=&property_type=Apartment&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Rent</a>
+						</div>
+					</div>
+
+					<h3>Apartments</h3>
+					<p>The word apartment denotes a residential unit or section in a building. Explore apartments for rent in your desired location today.</p>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-6">
+				<!-- Icon Box -->
+				<div class="icon-box-1">
+
+					<div class="icon-container">
+						<i class="im im-icon-Home-2"></i>
+						<div class="icon-links">
+							<a href="/properties/search/?property_status=Buy&property_state=&property_type=House&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Sale</a>
+							<a href="/properties/search/?property_status=Rent&property_state=&property_type=House&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Rent</a>
+						</div>
+					</div>
+
+					<h3>Houses</h3>
+					<p>A house is a single-unit residential. Your search for a place to call Home ends here. Browser through our catalogues and make a pick for a house that resonates with you.</p>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-6">
+				<!-- Icon Box -->
+				<div class="icon-box-1">
+
+					<div class="icon-container">
+						<i class="im im-icon-Car-3"></i>
+						<div class="icon-links">
+							<a href="/properties/search/?property_status=Buy&property_state=&property_type=Garage&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Sale</a>
+							<a href="/properties/search/?property_status=Rent&property_state=&property_type=Garage&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Rent</a>
+						</div>
+					</div>
+
+					<h3>Garages</h3>
+					<p>A closed shelter for a motor vehicle or vehicles. Do you require an enclosed space to have your exotic cars parked and protected? We have you covered.</p>
+				</div>
+			</div>
+
+			<div class="col-md-3 col-sm-6">
+				<!-- Icon Box -->
+				<div class="icon-box-1">
+
+					<div class="icon-container">
+						<i class="im im-icon-Clothing-Store"></i>
+						<div class="icon-links">
+							<a href="/properties/search/?property_status=Buy&property_state=&property_type=Commercial&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Sale</a>
+							<a href="/properties/search/?property_status=Rent&property_state=&property_type=Commercial&property_city=&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/">For Rent</a>
+						</div>
+					</div>
+
+					<h3>Commercial</h3>
+					<p>A commercial building is a building that is used for commercial use. Get your commercial office today for affordable prices</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</section>
+<!-- Fullwidth Section / End -->
+
+
+<!-- Container -->
+<div class="container">
+	<div class="row">
+
+		<div class="col-md-12">
+			<h3 class="headline centered margin-bottom-35 margin-top-10">Most Popular Places <span>Properties In Most Popular Places</span></h3>
+		</div>
+		
+		<div class="col-md-4">
+
+			<!-- Image Box -->
+			<a href="/properties/search/?property_status=Rent&property_status=Buy&property_status=Develop&property_status=Shortlet&property_state=&property_type=&property_city={{lagos.id}}&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/" class="img-box" data-background-image="{% static 'images/popular-location-01.jpg' %}">
+
+				<!-- Badge -->
+				<div class="listing-badges">
+					<span class="featured">Featured</span>
+				</div>
+
+				<div class="img-box-content visible">
+					<h4>LAGOS </h4>
+					<span>{{lagos.propertycity.count}} Properties</span>
+				</div>
+			</a>
+
+		</div>	
+			
+		<div class="col-md-8">
+
+			<!-- Image Box -->
+			<a href="/properties/search/?property_status=Rent&property_status=Buy&property_status=Develop&property_status=Shortlet&property_state=&property_type=&property_city={{abuja.id}}&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/" class="img-box" data-background-image="{% static 'images/popular-location-02.jpg' %}">
+				<div class="img-box-content visible">
+					<h4>ABUJA</h4>
+					<span>{{abuja.propertycity.count}} Properties</span>
+				</div>
+			</a>
+
+		</div>	
+
+		<div class="col-md-8">
+
+			<!-- Image Box -->
+			
+			<a href="/properties/search/?property_status=Rent&property_status=Buy&property_status=Develop&property_status=Shortlet&property_state=&property_type=property_city={{rivers.id}}&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000" class="img-box" data-background-image="{% static 'images/popular-location-03.jpg' %}">
+				<div class="img-box-content visible">
+					<h4>PORT HARCOURT</h4>
+					<span>{{rivers.propertycity.count}} Properties</span>
+				</div>
+			</a>
+
+		</div>	
+			
+		<div class="col-md-4">
+
+			<!-- Image Box -->
+			<a href="/properties/search/?property_status=Rent&property_status=Buy&property_status=Develop&property_status=Shortlet&property_state=&property_type=&property_city={{ibadan.id}}&property_bedrooms=&property_bathrooms=&property_parlors=&property_age=&property_price__gte=&property_price__lte=&property_area_min=0&property_area_max=90000/" class="img-box" data-background-image="{% static 'images/popular-location-04.jpg' %}">
+				<div class="img-box-content visible">
+					<h4>IBADAN</h4>
+					<span>{{ibadan.propertycity.count}} Properties</span>
+				</div>
+			</a>
+
+		</div>
+
+	</div>
+</div>
+<!-- Container / End -->
+
+
+<!-- Fullwidth Recent Blog Posts Section -->
+<section class="fullwidth margin-top-95 margin-bottom-0">
+
+	<!-- Box Headline -->
+	<h3 class="headline-box">Articles & Tips</h3>
+
+	<div class="container">
+		<div class="row">
+			{% for tip in featured_tips %}
+			<div class="col-md-4">
+
+				<!-- Blog Post -->
+				<div class="blog-post">
+					
+					<!-- Img -->
+					<a href="{{tip.get_absolute_url}}" class="post-img">
+						<img src="{% if tip.get_image_url %}{{tip.get_image_url}}{% else %}{% static 'images/blog-post-01.jpg' %}{% endif %}" alt="">
+					</a>
+					
+					<!-- Content -->
+					<div class="post-content">
+						<h3><a href="{{tip.get_absolute_url}}">{{tip.title}}</a></h3>
+						<p>{{tip.tip_content|truncatechars:150|safe}}</p>
+
+						<a href="{{tip.get_absolute_url}}" class="read-more">Read More <i class="fa fa-angle-right"></i></a>
+					</div>
+
+				</div>
+				<!-- Blog Post / End -->
+
+			</div>
+			{% empty %}
+			<div class="col-md-12">
+
+				<!-- Blog Post -->
+				<div class="blog-post">
+					
+					
+					<!-- Content -->
+					<div class="post-content p-5 text-center">
+						<h3>No Tip Yet</h3>
+						<p>We are working to provide you with helpful tips to get better properties. </p>
+					</div>
+
+				</div>
+				<!-- Blog Post / End -->
+
+			</div>
+
+			{% endfor %}
+
+		</div>
+	</div>
+</section>
+<!-- Fullwidth Section / End -->
+
+
+
+<!-- Flip banner -->
+<a href="{% url 'property:list' %}" class="flip-banner parallax" data-background="{% static 'images/flip-banner-bg.jpg' %}" data-color="#274abb" data-color-opacity="0.9" data-img-width="2500" data-img-height="1600">
+	<div class="flip-banner-content">
+		<h2 class="flip-visible">We help people and homes find each other</h2>
+		<h2 class="flip-hidden">Browse Properties <i class="sl sl-icon-arrow-right"></i></h2>
+	</div>
+</a>
+<!-- Flip banner / End -->
+
+
+{% endblock content %}
+
+
+
+{% block inline_javascript %}
+<script>
+    function initAutocomplete() {
+      var input = document.getElementById('autocomplete-input');
+      var autocomplete = new google.maps.places.Autocomplete(input);
+  
+      autocomplete.addListener('place_changed', function() {
+        var place = autocomplete.getPlace();
+        if (!place.geometry) {
+          window.alert("No details available for input: '" + place.name + "'");
+          return;
+        }
+      });
+  }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{API_KEY}}&libraries=places&callback=initAutocomplete"></script>
+{% endblock inline_javascript %}
