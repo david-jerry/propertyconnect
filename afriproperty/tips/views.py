@@ -41,15 +41,14 @@ class TipListView(ListView):
     ordering = ["-created"]
     page_kwarg = "page"
     paginated_by = 20
-    queryset = Tip.objects.filter(approved=True).exclude(published=False)
+    queryset = Tip.objects.filter(approved=True, published=True)
 
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        if self.queryset.exists():
-            return self.queryset.filter(
-                Q(title__icontains=query) | 
-                Q(tip_content__icontains=query)
-            ).distinct()
+    # def get_queryset(self):
+    #     query = self.request.GET.get('q')
+    #     return Tip.objects.filter(approved=True, published=True).filter(
+    #         Q(title__icontains=query) | 
+    #         Q(tip_content__icontains=query)
+    #     ).distinct()
 
 
 

@@ -11,6 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db import transaction
 from django.db.models import Avg, Count, F, Sum
 from django.db.models.functions import ExtractMonth, ExtractYear, datetime
+from django.forms.models import inlineformset_factory, modelformset_factory
 from django.http import JsonResponse, request
 from django.http.response import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
@@ -31,8 +32,10 @@ from .filters import AddressSearchFilter, HomeSearchFilter, PropertyFilter
 from .forms import (
     AgentMessageForm,
     PropertyBlueprintForm,
+    PropertyBlueprintFormset,
     PropertyForm,
     PropertyImageForm,
+    PropertyImageFormset,
     PropertyVideoForm,
 )
 from .models import (
@@ -48,54 +51,119 @@ from .models import (
 User = get_user_model()
 
 # Create your views here.
-def property_create_view(request):
-    if request.method == "POST":
-        form = PropertyForm(request.POST or None)
+class PropertyCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    form_class = PropertyForm
+    template_name = "property/create.html"
 
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.property_agent = request.user
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['video_form'] = PropertyVideoForm()
+        context['image_formset'] = PropertyImageFormset()
+        context['bp_formset'] = PropertyBlueprintFormset()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        image_formset = PropertyImageFormset(request.POST or None, request.FILES)
+        bp_formset = PropertyBlueprintFormset(request.POST or None, request.FILES)
+        video_form = PropertyVideoForm(request.POST or None, request.FILES)
+        if form.is_valid() and image_formset.is_valid() and bp_formset.is_valid() and video_form.is_valid():
+            return self.form_valid(form, image_formset, bp_formset, video_form)
+        else:
+            return self.form_invalid(form, image_formset, bp_formset, video_form)
+
+    def form_valid(self, form, image_formset, bp_formset, video_form):
+        self.object = form.save(commit=False)
+        self.object.save()
+
+        image_form = image_formset.save(commit=False)
+        for form in image_form:
+            form.property = self.object
             form.save()
 
-            image_form = PropertyImageForm(request.POST or None, request.FILES, instance=form)
-            video_form = PropertyVideoForm(request.POST or None, request.FILES, instance=form)
-            bp_form = PropertyBlueprintForm(request.POST or None, request.FILES, instance=form)
-            if image_form.is_valid() and video_form.is_valid() and bp_form.is_valid():
+        bp_form = bp_formset.save(commit=False)
+        for form in bp_form:
+            form.property = self.object
+            form.save()
 
-                print("form ID:", form.id)
-                print("form: ", form)
-                
-                image_form = image_form.save(commit=False)
-                print("image_form: ", image_form)
-                
-                
-                video_form = video_form.save(commit=False)
-                # video_form.save()
-                print("video_form: ", video_form)
-                
-                
-                bp_form = bp_form.save(commit=False)
-                # bp_form.save()
-                print("bp_form: ", bp_form)
 
-                messages.success(request, f"You have successfully updated {form.property_title}")
-                return redirect(form.get_absolute_url())
-            else:
-                messages.success(request, f"There was an error updating {form.property_title}")
-    else:
-        form = PropertyForm()
-        image_form = PropertyImageForm()
-        video_form = PropertyVideoForm()
-        bp_form = PropertyBlueprintForm()
+        vid_form = video_form.save(commit=False)
+        vid_form.property = self.object
+        vid_form.save()
 
-    context = {
-        "form": form,
-        "image_form": image_form,
-        "video_form": video_form,
-        "bp_form": bp_form,
-    }
+        return redirect(reverse("property:list"))
 
-    return render(request, "property/create.html", context)
+    def form_invalid(self, form, image_formset, bp_formset, video_form):
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                image_formset=image_formset,
+                bp_formset=bp_formset,
+                video_form=video_form
+            )
+        )
+
+property_create_view = PropertyCreateView.as_view()
+
+# def property_create_view(request):
+#     qs = PropertyImage.objects.all()
+#     bp = PropertyBlueprint.objects.all()
+#     pr = Property()
+
+#     form = PropertyForm(request.POST or None, instance=pr)
+
+#     image_form_formset = inlineformset_factory(PropertyImage, extra=0, form=PropertyImageForm)
+#     image_formset = image_form_formset()
+
+#     video_form = PropertyVideoForm(request.POST or None, request.FILES)
+
+#     bp_form_formset = modelformset_factory(PropertyBlueprint, extra=0, form=PropertyBlueprintForm)
+#     bp_formset = bp_form_formset()
+
+#     context = {
+#         "form": form,
+#         "image_formset": image_formset,
+#         "video_form": video_form,
+#         "bp_formset": bp_formset,
+#     }
+
+#     if request.POST:
+#         image_formset = image_form_formset(request.POST or None, request.FILES, queryset=None)
+#         bp_formset = bp_form_formset(request.POST or None, request.FILES, queryset=None)
+#         if form.is_valid() and image_formset.is_valid() and video_form.is_valid() and bp_formset.is_valid():
+#             form = form.save(commit=False)
+#             form.property_agent = request.user
+#             form.approved = True
+#             form.save()
+
+            
+#             for image_form in image_formset:
+#                 image_form = image_form.save(commit=False)
+#                 if image_form.property is None:
+#                     image_form.property = form
+#                 image_form.save()
+            
+            
+#             for bp_form in bp_formset:
+#                 bp_form = bp_form.save(commit=False)
+#                 if bp_form.property is None:
+#                     bp_form.property = form
+#                 bp_form.save()
+            
+            
+#             video_form = video_form.save(commit=False)
+#             video_form.property = form
+#             video_form.save()     
+
+#             messages.success(request, f"You have successfully created a property listing")
+#             return redirect(reverse_lazy("property:list"))
+#         else:
+#             messages.success(request, f"There was an error creating a property listing")
+
+
+#     return render(request, "property/create.html", context)
 
 def property_update_view(request, slug=None):
     obj = get_object_or_404(property, slug=slug, property_agent=request.user)

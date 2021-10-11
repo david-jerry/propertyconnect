@@ -299,7 +299,7 @@ class Property(TimeStampedModel):
         return str(self.property_title)
 
     def title(self):
-        return f"{self.property_title}"
+        return self.property_title
 
 
     def get_related_property(self):
@@ -359,7 +359,7 @@ class Property(TimeStampedModel):
 
 class PropertyImage(TimeStampedModel):
     property = ForeignKey("Property", on_delete=CASCADE, related_name="propertyimage")
-    image = ResizedImageField(size=[520, 397], quality=80, crop=['middle', 'center'], upload_to=property_images, force_format='JPEG', null=True, help_text="image size: 520x397.")
+    image = ResizedImageField(size=[520, 397], quality=80, crop=['middle', 'center'], upload_to=property_images, force_format='JPEG', null=True, blank=True, help_text="image size: 520x397.")
 
     def __str__(self):
         return f"{self.property.property_title} Image"
@@ -388,7 +388,7 @@ class PropertyBlueprint(TimeStampedModel):
     )
     property = ForeignKey("Property", on_delete=CASCADE, related_name="propertyplan")
     type = CharField(_("Blueprint"), null=True, blank=False, max_length=50, choices=BLUEPRINT, default=FIRST)
-    image = ResizedImageField(size=[1000, 576], quality=70, crop=['middle', 'center'], upload_to=blueprint_image, force_format='JPEG', null=True, help_text="image size: 1000x576.")
+    image = ResizedImageField(size=[1000, 576], quality=70, crop=['middle', 'center'], upload_to=blueprint_image, force_format='JPEG',  null=True, blank=True, help_text="image size: 1000x576.")
     floor_area = DecimalField(_("Area Sq/Ft"), max_digits=20, decimal_places=2, default=0.00, blank=False)
     floor_detail = HTMLField()
 
@@ -397,7 +397,7 @@ class PropertyBlueprint(TimeStampedModel):
 
 class PropertyVideo(TimeStampedModel):
     property = ForeignKey("Property", on_delete=CASCADE, related_name="propertyvideo")
-    video = FileField(upload_to=property_video, help_text="Your video should be 40Seconds Long, 20MB in size max")
+    video = FileField(upload_to=property_video, null=True, blank=True, help_text="Your video should be 40Seconds Long, 20MB in size max")
 
     def __str__(self):
         return f"{self.property.property_title} New Video"

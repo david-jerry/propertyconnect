@@ -153,7 +153,7 @@ class Tip(TimeStampedModel):
 
 class TipImageFile(TimeStampedModel):
     tip = ForeignKey(Tip, on_delete=CASCADE, related_name="tipimage")
-    image = FileField(upload_to=tip_images)
+    image = ResizedImageField(size=[520, 397], quality=80, crop=['middle', 'center'], upload_to=tip_images, force_format='JPEG', null=True, help_text="image size: 520x397.")
 
     def __str__(self):
         return f"{self.tip.title} Image"

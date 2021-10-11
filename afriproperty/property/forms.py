@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.forms.models import inlineformset_factory
 from tinymce.widgets import TinyMCE
 
 from .models import Property, PropertyBlueprint, PropertyImage, PropertyVideo
@@ -33,6 +34,9 @@ class PropertyForm(forms.ModelForm):
             "property_expire"
         ]
         widgets = {
+            "property_status": forms.Select(attrs={"class":"chosen-select-no-single"}),
+            "property_type": forms.Select(attrs={"class":"chosen-select-no-single"}),
+            "property_price_type": forms.Select(attrs={"class":"chosen-select-no-single"}),
             "property_features": forms.CheckboxSelectMultiple(),
             "property_location": forms.TextInput(attrs={"class":"autocomplete-input", "autocomplete":"off"}),
             "property_near_location": forms.TextInput(attrs={"class":"autocomplete-input"})
@@ -45,6 +49,8 @@ class PropertyImageForm(forms.ModelForm):
             "image"
         ]
 
+PropertyImageFormset = inlineformset_factory(Property, PropertyImage, form=PropertyImageForm, extra=10, max_num=10)
+
 class PropertyBlueprintForm(forms.ModelForm):
     class Meta:
         model = PropertyBlueprint
@@ -55,12 +61,15 @@ class PropertyBlueprintForm(forms.ModelForm):
             "floor_detail"
         ]
 
+PropertyBlueprintFormset = inlineformset_factory(Property, PropertyBlueprint, form=PropertyBlueprintForm, extra=4, max_num=4)
+
 class PropertyVideoForm(forms.ModelForm):
     class Meta:
         model = PropertyVideo
         fields = [
             "video"
         ]
+
 
 class AgentMessageForm(forms.Form):
     property = forms.CharField()

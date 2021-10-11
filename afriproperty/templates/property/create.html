@@ -17,7 +17,8 @@ properties, purchase properties in nigeria, nigeria properties, affordable prope
 {% block breadcrumb %}create-property{% endblock breadcrumb %}
 
 {% block header_scripts %}
-<script defer src="http://maps.googleapis.com/maps/api/js?key={{API_KEY}}&libraries=places&callback=initAutocomplete"></script>
+<script defer
+    src="http://maps.googleapis.com/maps/api/js?key={{API_KEY}}&libraries=places&callback=initAutocomplete"></script>
 {{ block.super }}
 <script defer type="text/javascript" src="{% static 'js/dropzone.js' %}"></script>
 {% endblock header_scripts %}
@@ -31,24 +32,1024 @@ properties, purchase properties in nigeria, nigeria properties, affordable prope
             <h4>Property Listing Information</h4>
             <p>Here at property connect, we are very particular on ensuring every listed property is authentic and
                 problem free. By listing your property here you accept that this property is not in any legal case or
-                marked for demolition. <b class="text-upper">Should there be a defaulting on this terms you accept that a fine of ₦25,000.00
-                upon our findings to be true will be charged on you to be paid. Failure to provide this will earn you a trip to the court.</b>
-                <em class="text-danger d-block margin-top-55"><b>NOTE: Always ensure you mark a property sold so the client can confirm and remove it from all available listing. This status lasts for a duration of 1year 2months, minimum renting and 100years land purchase/lease</b></em>
+                marked for demolition. <b class="text-upper">Should there be a defaulting on this terms you accept that
+                    a fine of ₦25,000.00
+                    upon our findings to be true will be charged on you to be paid. Failure to provide this will earn
+                    you a trip to the court.</b>
+                <em class="text-danger d-block margin-top-55"><b>NOTE: Always ensure you mark a property sold so the
+                        client can confirm and remove it from all available listing. This status lasts for a duration of
+                        1year 2months, minimum renting and 100years land purchase/lease</b></em>
             </p>
         </div>
 
-        <!-- Section -->
-        <h3>Basic Information</h3>
         <form action="{% url 'property:create' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            {{form.as_p}}
-            {{image_form.media}}
+            {{ form.non_form_errors }}
+            {{ image_formset.non_form_errors }}
+            {{ video_form.non_form_errors }}
+            {{ bp_formset.non_form_errors }}
+
+            {{ image_formset.management_form }}
+            {{ bp_formset.management_form }}
+
+
+            <!-- Section -->
+            <h3>Basic Information</h3>
+            <div class="submit-section">
+                <div class="form">
+                    <h5>Property Title <i class="tip"
+                            data-tip-content="Type title that will also contains an unique feature of your property (e.g. renovated, air contidioned)"></i>
+                    </h5>
+                    <input id="id_property_title" maxlength="500" name="property_title" required="required" type="text"
+                        class="search_field">
+                    <span>{{form.property_title.errors}}</span>
+                </div>
+
+                <div class="row with-forms">
+                    <div class="col-md-6">
+                        <h5>Property Status <i class="tip"
+                                data-tip-content="This should lable the property for sale or rentage."></i></h5>
+                        <select name="property_status" id="id_property_status" class="chosen-select-no-single">
+                            <option label="blank"></option>
+                            <option value="Sold">Sold</option>
+                            <option value="Buy">Buy</option>
+                            <option selected="selected" value="Rent">Rent</option>
+                            <option value="Develop">Develop</option>
+                            <option value="Shortlet">Shortlet</option>
+                        </select>
+                        <span>{{form.property_status.errors}}</span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Property Type</h5>
+                        <select id="id_property_type" name="property_type" class="chosen-select-no-single">
+                            <option label=" blank"></option>option>
+                            <option selected="selected" value="Apartment">Apartment</option>
+                            <option value="House">House</option>
+                            <option value="Commercial">Commercial</option>
+                            <option value="Garage">Garage</option>
+                            <option value="Garden">Garden</option>
+                            <option value="Lot">Lot</option>
+                            <option value="Plot">Plot</option>
+                        </select>
+                        <span>{{form.property_type.errors}}</span>
+                    </div>
+                </div>
+
+                <div class="row with-forms">
+                    <div class="col-md-6">
+                        <h5>Property Pricing <i class="tip"
+                                data-tip-content="This just tells the users that the property is sold annually or otherwise."></i>
+                        </h5>
+                        <select id="id_property_price_type" name="property_price_type" class="chosen-select-no-single">
+                            <option label=" blank"></option>option>
+                            <option selected="selected" value="Annually">Annually</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Sq/Ft">Sq/Ft</option>
+                        </select>
+                        <span>{{form.property_price_type.errors}}</span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Property Cost Price <i class="tip"
+                                data-tip-content="Type overall or monthly price if property is for rent"></i></h5>
+                        <input id="id_property_price" name="property_price" required="required" step="0.01"
+                            type="number" value="0.0" data-unit="USD">
+                        <small class="text-info">{{form.property_price.help_text}}</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <h3>Property Details</h3>
+            <div class="submit-section">
+                <div class="row with-forms">
+                    <div class="col-md-4">
+                        <h5>Property Area</h5>
+                        <input id="id_property_area" name="property_area" step="0.01" type="number" value="0.0">
+                    </div>
+
+                    <div class="col-md-4">
+                        <h5>Single Unit Area <i class="tip" data-tip-content="{{form.property_area_number.help_text}}"></i></h5>
+                        <input id="id_property_area_number" name="property_area_number" type="number" value="1">
+                    </div>
+
+
+                </div>
+
+                <div class="row with-forms">
+                    <div class="col-md-4">
+                        <h5>Bed Rooms</h5>
+                        <select id="id_property_bedrooms" name="property_bedrooms" class="chosen-select-no-single">
+                            <option label=" blank"></option>option>
+                            <option selected="selected" value="1">1 Room</option>
+                            <option value="2">2 Rooms</option>
+                            <option value="3">3 Rooms</option>
+                            <option value="4">4 Rooms</option>
+                            <option value="5">5 Rooms</option>
+                            <option value="0">More than 5 Rooms</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md 4">
+                        <h5>Living Room</h5>
+                        <select id="id_property_parlors" name="property_parlors" class="chosen-select-no-single">
+                            <option label=" blank"></option>option>
+                            <option selected="selected" value="1">1 Room</option>
+                            <option value="2">2 Rooms</option>
+                            <option value="3">3 Rooms</option>
+                            <option value="4">4 Rooms</option>
+                            <option value="5">5 Rooms</option>
+                            <option value="0">More than 5 Rooms</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <h5>Bathrooms</h5>
+                        <select id="id_property_bathrooms" name="property_bathrooms" class="chosen-select-no-single">
+                            <option label=" blank"></option>option>
+                            <option selected="selected" value="1">1 Room</option>
+                            <option value="2">2 Rooms</option>
+                            <option value="3">3 Rooms</option>
+                            <option value="4">4 Rooms</option>
+                            <option value="5">5 Rooms</option>
+                            <option value="0">More than 5 Rooms</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form">
+                    <h5>Property Address</h5>
+                    <input autocomplete="off" id="id_property_location" maxlength="500" name="property_location"
+                        required="required" type="text" class="autocomplete-input pac-target-input"
+                        placeholder="Start typing and">
+                </div>
+
+                <div class="form">
+                    <h5>Nearest Landmark</h5>
+                    <input id="id_property_near_location" maxlength="500" name="property_near_location"
+                        required="required" type="text" class="autocomplete-input" placeholder="Nearest Landmark">
+                </div>
+
+                <div class="row with-forms">
+                    <div class="col-md-6">
+                        <h5>Latitude<i class="tip"
+                                data-tip-content="To ensure you have a map pointing people to your property, ensure you google your property on google map, and copy the longitude and latitude"></i>
+                        </h5>
+                        <input id="id_property_latitude" name="property_latitude" required="required" step="any"
+                            type="number" value="0.0">
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>Longitude<i class="tip"
+                                data-tip-content="To ensure you have a map pointing people to your property, ensure you google your property on google map, and copy the longitude and latitude"></i>
+                        </h5>
+                        <input id="id_property_longitude" name="property_longitude" required="required" step="any"
+                            type="number" value="0.0">
+                    </div>
+                </div>
+
+                <div class="row with-forms">
+                    <div class="col-md-6">
+                        <h5>City</h5>
+                        <select class="chosen-select" id="id_property_city" name="property_city" required="required">
+                            <option label="blank"></option>
+                            <option value="22">Aba</option>
+                            <option value="115">Abagana</option>
+                            <option value="562">Abaji</option>
+                            <option value="158">Abak</option>
+                            <option value="118">Abakaliki</option>
+                            <option value="156">Abat</option>
+                            <option value="655">Abejukolo</option>
+                            <option value="12">Abeokuta</option>
+                            <option value="598">Abigi</option>
+                            <option value="135">Aboh</option>
+                            <option value="318">Abonnema</option>
+                            <option value="249">Abua</option>
+                            <option value="613">Abudu</option>
+                            <option value="6">Abuja</option>
+                            <option value="306">Abuochiche</option>
+                            <option value="337">Achalla</option>
+                            <option value="482">Adikpo</option>
+                            <option value="24">Ado-Ekiti</option>
+                            <option value="580">Adogo</option>
+                            <option value="176">Afaha Ikot Ebak</option>
+                            <option value="150">Afaha Offiong</option>
+                            <option value="279">Afam</option>
+                            <option value="164">Afikpo</option>
+                            <option value="610">Afon</option>
+                            <option value="108">Afor-Oru</option>
+                            <option value="525">Afuze</option>
+                            <option value="628">Agaie</option>
+                            <option value="211">Agbani</option>
+                            <option value="317">Agbor</option>
+                            <option value="84">Agege</option>
+                            <option value="454">Agenebode</option>
+                            <option value="638">Ago-Amodu</option>
+                            <option value="205">Aguata</option>
+                            <option value="345">Aguobu-Owa</option>
+                            <option value="716">Agwara</option>
+                            <option value="227">Ahoada</option>
+                            <option value="496">Ajaawa</option>
+                            <option value="623">Ajaka</option>
+                            <option value="232">Ajalli</option>
+                            <option value="74">Ajegunle</option>
+                            <option value="356">Ajingi</option>
+                            <option value="731">Akamkpa</option>
+                            <option value="152">Akanran</option>
+                            <option value="191">Akinima</option>
+                            <option value="350">Akodo</option>
+                            <option value="208">Akpafa</option>
+                            <option value="501">Akpet Central</option>
+                            <option value="27">Akure</option>
+                            <option value="512">Akwanga</option>
+                            <option value="376">Akwete</option>
+                            <option value="360">Akwukwu-Igbo</option>
+                            <option value="258">Albasu</option>
+                            <option value="636">Aliade</option>
+                            <option value="432">Aliero</option>
+                            <option value="670">Alkaleri</option>
+                            <option value="440">Amagunze</option>
+                            <option value="96">Amaigbo</option>
+                            <option value="344">Anaku</option>
+                            <option value="543">Anchau</option>
+                            <option value="552">Angware</option>
+                            <option value="661">Anka</option>
+                            <option value="410">Ankpa</option>
+                            <option value="43">Apapa</option>
+                            <option value="230">Apomu</option>
+                            <option value="178">Aramoko-Ekiti</option>
+                            <option value="564">Araromi-Opin</option>
+                            <option value="462">Argungu</option>
+                            <option value="245">Arochukwu</option>
+                            <option value="116">Asaba</option>
+                            <option value="637">Askira</option>
+                            <option value="204">Atan</option>
+                            <option value="193">Atani</option>
+                            <option value="418">Auchi</option>
+                            <option value="616">Augie</option>
+                            <option value="354">Auyo</option>
+                            <option value="700">Awe</option>
+                            <option value="248">Awgu</option>
+                            <option value="34">Awka</option>
+                            <option value="362">Awo</option>
+                            <option value="149">Awo-Idemili</option>
+                            <option value="596">Ayete</option>
+                            <option value="575">Ayetoro</option>
+                            <option value="60">Azare</option>
+                            <option value="595">Baap</option>
+                            <option value="741">Babban Gida</option>
+                            <option value="585">Babura</option>
+                            <option value="209">Badagry</option>
+                            <option value="684">Bagudo</option>
+                            <option value="239">Bagwai</option>
+                            <option value="740">Baissa</option>
+                            <option value="453">Bajoga</option>
+                            <option value="387">Bakori</option>
+                            <option value="608">Bakura</option>
+                            <option value="735">Bali</option>
+                            <option value="737">Balle</option>
+                            <option value="55">Bama</option>
+                            <option value="719">Bangi</option>
+                            <option value="691">Bara</option>
+                            <option value="409">Barkin Ladi</option>
+                            <option value="520">Bassa</option>
+                            <option value="252">Batagarawa</option>
+                            <option value="423">Batsari</option>
+                            <option value="20">Bauchi</option>
+                            <option value="341">Baure</option>
+                            <option value="349">Bebeji</option>
+                            <option value="246">Bende</option>
+                            <option value="8">Benin City</option>
+                            <option value="722">Benisheikh</option>
+                            <option value="534">Besse</option>
+                            <option value="229">Bichi</option>
+                            <option value="49">Bida</option>
+                            <option value="364">Billiri</option>
+                            <option value="274">Bindawa</option>
+                            <option value="420">Binji</option>
+                            <option value="701">Birnin Gwari</option>
+                            <option value="59">Birnin Kebbi</option>
+                            <option value="398">Birnin Kudu</option>
+                            <option value="463">Birnin Magaji</option>
+                            <option value="587">Birniwa</option>
+                            <option value="63">Biu</option>
+                            <option value="395">Bode Osi</option>
+                            <option value="721">Bode Saadu</option>
+                            <option value="315">Bodinga</option>
+                            <option value="510">Bogoro</option>
+                            <option value="442">Boh</option>
+                            <option value="649">Boje</option>
+                            <option value="540">Bokkos</option>
+                            <option value="386">Bolorunduro</option>
+                            <option value="166">Bomadi</option>
+                            <option value="253">Bonny</option>
+                            <option value="192">Bori</option>
+                            <option value="518">Briyel</option>
+                            <option value="95">Buguma</option>
+                            <option value="647">Bukkuyum</option>
+                            <option value="174">Bukuru</option>
+                            <option value="484">Bungudu</option>
+                            <option value="705">Buni Yadi</option>
+                            <option value="277">Bunkure</option>
+                            <option value="477">Bunza</option>
+                            <option value="509">Buruku</option>
+                            <option value="44">Burutu</option>
+                            <option value="224">Bwari</option>
+                            <option value="23">Calabar</option>
+                            <option value="329">Charanchi</option>
+                            <option value="686">Chibok</option>
+                            <option value="589">Dakingari</option>
+                            <option value="650">Damagum</option>
+                            <option value="713">Damasak</option>
+                            <option value="39">Damaturu</option>
+                            <option value="474">Dambam</option>
+                            <option value="346">Dambatta</option>
+                            <option value="712">Damboa</option>
+                            <option value="302">Dandume</option>
+                            <option value="468">Dange</option>
+                            <option value="347">Danja</option>
+                            <option value="495">Dan Musa</option>
+                            <option value="725">Dapchi</option>
+                            <option value="561">Darazo</option>
+                            <option value="452">Dass</option>
+                            <option value="170">Daura</option>
+                            <option value="171">Dawakin Kudu</option>
+                            <option value="200">Dawakin Tofa</option>
+                            <option value="519">Deba</option>
+                            <option value="319">Degema</option>
+                            <option value="625">Dekina</option>
+                            <option value="605">Demsa</option>
+                            <option value="668">Dengi</option>
+                            <option value="101">Dikenafai</option>
+                            <option value="677">Dikwa</option>
+                            <option value="672">Doma</option>
+                            <option value="707">Donga</option>
+                            <option value="665">Dukku</option>
+                            <option value="52">Dutse</option>
+                            <option value="257">Dutsi</option>
+                            <option value="312">Dutsin-Ma</option>
+                            <option value="251">Ebem Ohafia</option>
+                            <option value="300">Eberi</option>
+                            <option value="80">Ebute-Metta</option>
+                            <option value="361">Ede</option>
+                            <option value="588">Effraya</option>
+                            <option value="100">Effurun</option>
+                            <option value="222">Efon-Alaaye</option>
+                            <option value="113">Egbeda</option>
+                            <option value="469">Egbema</option>
+                            <option value="663">Ehor</option>
+                            <option value="296">Ejigbo</option>
+                            <option value="473">Ekeremor</option>
+                            <option value="148">Eket</option>
+                            <option value="366">Ekpoma</option>
+                            <option value="335">Emuoha</option>
+                            <option value="311">Emure-Ekiti</option>
+                            <option value="407">Enagi</option>
+                            <option value="19">Enugu</option>
+                            <option value="165">Enugu-Ezike</option>
+                            <option value="240">Enwang</option>
+                            <option value="47">Epe</option>
+                            <option value="491">Eruwa</option>
+                            <option value="147">Etinan</option>
+                            <option value="146">Eyofin</option>
+                            <option value="466">Ezillo</option>
+                            <option value="285">Ezzamgbo</option>
+                            <option value="547">Faskari</option>
+                            <option value="94">Festac Town</option>
+                            <option value="640">Fika</option>
+                            <option value="502">Fufore</option>
+                            <option value="129">Fufu</option>
+                            <option value="504">Fugar</option>
+                            <option value="48">Funtua</option>
+                            <option value="541">Gada</option>
+                            <option value="549">Gagarawa</option>
+                            <option value="703">Gajiram</option>
+                            <option value="568">Gamawa</option>
+                            <option value="439">Gamboru</option>
+                            <option value="448">Gantsa</option>
+                            <option value="583">Ganye</option>
+                            <option value="659">Garaku</option>
+                            <option value="558">Garki</option>
+                            <option value="283">Garko</option>
+                            <option value="210">Garun Malam</option>
+                            <option value="54">Gashua</option>
+                            <option value="597">Gawu Babangida</option>
+                            <option value="357">Gaya</option>
+                            <option value="631">Gbajimba</option>
+                            <option value="436">Gboko</option>
+                            <option value="492">Gbongan</option>
+                            <option value="710">Geidam</option>
+                            <option value="396">Gella</option>
+                            <option value="692">Gembu</option>
+                            <option value="160">Gezawa</option>
+                            <option value="370">Giade</option>
+                            <option value="689">Gidan Madi</option>
+                            <option value="503">Girei</option>
+                            <option value="486">Giwa</option>
+                            <option value="37">Gombe</option>
+                            <option value="634">Gombi</option>
+                            <option value="548">Goronyo</option>
+                            <option value="651">Gubio</option>
+                            <option value="698">Gudumbali</option>
+                            <option value="348">Gulak</option>
+                            <option value="241">Gumel</option>
+                            <option value="648">Gummi</option>
+                            <option value="557">Guri</option>
+                            <option value="41">Gusau</option>
+                            <option value="530">Guyuk</option>
+                            <option value="377">Gwadabawa</option>
+                            <option value="338">Gwagwalada</option>
+                            <option value="444">Gwandu</option>
+                            <option value="545">Gwantu</option>
+                            <option value="508">Gwaram</option>
+                            <option value="215">Gwarzo</option>
+                            <option value="383">Gwiwa</option>
+                            <option value="537">Gwoza</option>
+                            <option value="93">Hadejia</option>
+                            <option value="656">Hong</option>
+                            <option value="288">Hunkuyi</option>
+                            <option value="3">Ibadan</option>
+                            <option value="161">Ibagwa-Aka</option>
+                            <option value="724">Ibi</option>
+                            <option value="401">Ibiaku Ntok Okpo</option>
+                            <option value="403">Iboko</option>
+                            <option value="381">Ibokun</option>
+                            <option value="68">Idah</option>
+                            <option value="343">Idi-Ayunre</option>
+                            <option value="563">Ido</option>
+                            <option value="186">Ido-Ekiti</option>
+                            <option value="247">Idogbo</option>
+                            <option value="260">Idu</option>
+                            <option value="77">Ifako</option>
+                            <option value="425">Ifetedo</option>
+                            <option value="137">Ifo</option>
+                            <option value="133">Ifon</option>
+                            <option value="422">Igarra</option>
+                            <option value="172">Igbara-Oke</option>
+                            <option value="393">Igbekebo</option>
+                            <option value="603">Igbeti</option>
+                            <option value="542">Igboho</option>
+                            <option value="419">Igbokoda</option>
+                            <option value="375">Igbo-Ora</option>
+                            <option value="294">Igede-Ekiti</option>
+                            <option value="456">Igueben</option>
+                            <option value="450">Igumale</option>
+                            <option value="687">Iguobazuwa</option>
+                            <option value="122">Ihiala</option>
+                            <option value="126">Iho</option>
+                            <option value="303">Ijebu-Igbo</option>
+                            <option value="359">Ijebu-Jesa</option>
+                            <option value="45">Ijebu-Ode</option>
+                            <option value="182">Ijero-Ekiti</option>
+                            <option value="426">Iju</option>
+                            <option value="399">Ikara</option>
+                            <option value="9">Ikare</option>
+                            <option value="83">Ikeja</option>
+                            <option value="467">Ikem</option>
+                            <option value="153">Ikenne</option>
+                            <option value="169">Ikere-Ekiti</option>
+                            <option value="231">Ikire</option>
+                            <option value="168">Ikirun</option>
+                            <option value="459">Ikole-Ekiti</option>
+                            <option value="600">Ikom</option>
+                            <option value="120">Ikorodu</option>
+                            <option value="72">Ikot Abasi</option>
+                            <option value="235">Ikot Akpa Nkuk</option>
+                            <option value="180">Ikot Edibon</option>
+                            <option value="143">Ikot Ekpene</option>
+                            <option value="271">Ikot Ibritam</option>
+                            <option value="292">Ikot Nakanda</option>
+                            <option value="82">Ikotun</option>
+                            <option value="98">Ikoyi</option>
+                            <option value="606">Ikoyi-Ile</option>
+                            <option value="431">Ila Orangun</option>
+                            <option value="355">Ilaro</option>
+                            <option value="206">Ilawe-Ekiti</option>
+                            <option value="21">Ile-Ife</option>
+                            <option value="151">Ilemona</option>
+                            <option value="179">Ile-Ogbo</option>
+                            <option value="265">Ile-Oluji</option>
+                            <option value="110">Ilesa</option>
+                            <option value="406">Illela</option>
+                            <option value="107">Ilobu</option>
+                            <option value="483">Iloffa</option>
+                            <option value="14">Ilorin</option>
+                            <option value="674">Imeko</option>
+                            <option value="391">Ingawa</option>
+                            <option value="507">Iperindo</option>
+                            <option value="471">Ipetumodu</option>
+                            <option value="313">Ipokia</option>
+                            <option value="167">Iragbiji</option>
+                            <option value="443">Iresa-Adu</option>
+                            <option value="263">Irrua</option>
+                            <option value="630">Isa</option>
+                            <option value="569">Isanlu</option>
+                            <option value="281">Isara</option>
+                            <option value="301">Ise-Ekiti</option>
+                            <option value="62">Iseyin</option>
+                            <option value="261">Isiaka</option>
+                            <option value="195">Isiala Oboro</option>
+                            <option value="109">Isinweke</option>
+                            <option value="213">Isiokolo</option>
+                            <option value="334">Isiokpo</option>
+                            <option value="384">Issele-Uku</option>
+                            <option value="216">Isu</option>
+                            <option value="289">Isua</option>
+                            <option value="427">Ita-Ogbolu</option>
+                            <option value="478">Itas</option>
+                            <option value="214">Itigidi</option>
+                            <option value="581">Itori</option>
+                            <option value="106">Itu</option>
+                            <option value="693">Iwere-Ile</option>
+                            <option value="40">Iwo</option>
+                            <option value="199">Iyana-Ofa</option>
+                            <option value="515">Iyara</option>
+                            <option value="242">Iye-Ekiti</option>
+                            <option value="632">Jada</option>
+                            <option value="430">Jahun</option>
+                            <option value="576">Jajimaji</option>
+                            <option value="653">Jakusko</option>
+                            <option value="56">Jalingo</option>
+                            <option value="385">Jama’are</option>
+                            <option value="402">Jega</option>
+                            <option value="475">Jibia</option>
+                            <option value="611">Jimeta</option>
+                            <option value="438">Jobele</option>
+                            <option value="13">Jos</option>
+                            <option value="675">Kabba</option>
+                            <option value="218">Kabo</option>
+                            <option value="671">Kachia</option>
+                            <option value="16">Kaduna</option>
+                            <option value="527">Kafanchan</option>
+                            <option value="365">Kafin Hausa</option>
+                            <option value="673">Kafin Madaki</option>
+                            <option value="416">Kafur</option>
+                            <option value="669">Kagara</option>
+                            <option value="554">Kagarko</option>
+                            <option value="424">Kaiama</option>
+                            <option value="435">Kaita</option>
+                            <option value="685">Kajuru</option>
+                            <option value="397">Kalgo</option>
+                            <option value="441">Kaltungo</option>
+                            <option value="641">Kamba</option>
+                            <option value="739">Kanamma</option>
+                            <option value="708">Kangiwa</option>
+                            <option value="460">Kankara</option>
+                            <option value="446">Kankia</option>
+                            <option value="2">Kano</option>
+                            <option value="275">Karaye</option>
+                            <option value="727">Karim Lamido</option>
+                            <option value="404">Karkarna</option>
+                            <option value="602">Karu</option>
+                            <option value="544">Katagum</option>
+                            <option value="629">Katcha</option>
+                            <option value="25">Katsina</option>
+                            <option value="593">Katsina-Ala</option>
+                            <option value="485">Kaugama</option>
+                            <option value="388">Kaura</option>
+                            <option value="255">Kaura Namoda</option>
+                            <option value="601">Kauru</option>
+                            <option value="244">Kazaure</option>
+                            <option value="619">Keana</option>
+                            <option value="560">Kebbe</option>
+                            <option value="66">Keffi</option>
+                            <option value="363">Khaddamari</option>
+                            <option value="278">Kibiya</option>
+                            <option value="662">Kirfi</option>
+                            <option value="372">Kiri Kasamma</option>
+                            <option value="305">Kiru</option>
+                            <option value="538">Kisi</option>
+                            <option value="476">Kiyawa</option>
+                            <option value="198">Koguna</option>
+                            <option value="591">Koko</option>
+                            <option value="729">Konduga</option>
+                            <option value="61">Kontagora</option>
+                            <option value="738">Kosubosu</option>
+                            <option value="612">Koton-Karfe</option>
+                            <option value="91">Kpor</option>
+                            <option value="618">Kujama</option>
+                            <option value="155">Kuje</option>
+                            <option value="688">Kukawa</option>
+                            <option value="99">Kumbotso</option>
+                            <option value="71">Kumo</option>
+                            <option value="465">Kunchi</option>
+                            <option value="183">Kura</option>
+                            <option value="411">Kurfi</option>
+                            <option value="368">Kusada</option>
+                            <option value="690">Kuta</option>
+                            <option value="667">Kutigi</option>
+                            <option value="571">Kwal</option>
+                            <option value="449">Kwale</option>
+                            <option value="546">Kwali</option>
+                            <option value="429">Kware</option>
+                            <option value="615">Kwaya Kusar</option>
+                            <option value="284">Kwoi</option>
+                            <option value="53">Lafia</option>
+                            <option value="609">Lafiagi</option>
+                            <option value="1">Lagos</option>
+                            <option value="567">Lamurde</option>
+                            <option value="451">Langtang</option>
+                            <option value="706">Lapai</option>
+                            <option value="726">Lau</option>
+                            <option value="627">Lemu</option>
+                            <option value="481">Lessel</option>
+                            <option value="714">Lissam</option>
+                            <option value="70">Lokoja</option>
+                            <option value="620">Mabudi</option>
+                            <option value="678">Machina</option>
+                            <option value="203">Madobi</option>
+                            <option value="715">Mafa</option>
+                            <option value="728">Magumeri</option>
+                            <option value="654">Mahuta</option>
+                            <option value="46">Mai’Adua</option>
+                            <option value="7">Maiduguri</option>
+                            <option value="506">Maigana</option>
+                            <option value="470">Maigatari</option>
+                            <option value="415">Maiha</option>
+                            <option value="573">Maikunkele</option>
+                            <option value="535">Maiyama</option>
+                            <option value="336">Makarfi</option>
+                            <option value="85">Makera</option>
+                            <option value="35">Makurdi</option>
+                            <option value="412">Malam Madori</option>
+                            <option value="733">Mallam Fatori</option>
+                            <option value="524">Mallam Sidi</option>
+                            <option value="340">Malumfashi</option>
+                            <option value="461">Mangu</option>
+                            <option value="379">Mani</option>
+                            <option value="584">Maradun</option>
+                            <option value="695">Marte</option>
+                            <option value="709">Maru</option>
+                            <option value="736">Mashegu</option>
+                            <option value="434">Mashi</option>
+                            <option value="394">Matazu</option>
+                            <option value="633">Mayo-Belwa</option>
+                            <option value="298">Mbalano</option>
+                            <option value="123">Mgbidi</option>
+                            <option value="139">Mgboko</option>
+                            <option value="389">Michika</option>
+                            <option value="414">Miga</option>
+                            <option value="202">Minjibir</option>
+                            <option value="33">Minna</option>
+                            <option value="392">Misau</option>
+                            <option value="212">Mkpat Enin</option>
+                            <option value="642">Mokwa</option>
+                            <option value="699">Monguno</option>
+                            <option value="238">Moniya</option>
+                            <option value="683">Mopa</option>
+                            <option value="42">Mubi</option>
+                            <option value="421">Musawa</option>
+                            <option value="79">Mushin</option>
+                            <option value="702">Mutum Biyu</option>
+                            <option value="621">Nafada</option>
+                            <option value="566">Naka</option>
+                            <option value="723">Nasarawa</option>
+                            <option value="521">Nasarawa Egon</option>
+                            <option value="679">Nasko</option>
+                            <option value="112">Nchia</option>
+                            <option value="236">Ndeaboh</option>
+                            <option value="472">Nembe</option>
+                            <option value="90">Neni</option>
+                            <option value="742">New Bussa</option>
+                            <option value="134">Ngo</option>
+                            <option value="58">Nguru</option>
+                            <option value="233">Nguzu Edda</option>
+                            <option value="622">Ningi</option>
+                            <option value="140">Nkwerre</option>
+                            <option value="286">Nkwoagu Isuochi</option>
+                            <option value="157">Nkwo Nike</option>
+                            <option value="104">Nnenasa</option>
+                            <option value="102">Nnewi</option>
+                            <option value="57">Nsukka</option>
+                            <option value="128">Nteje</option>
+                            <option value="177">Nto Edino</option>
+                            <option value="67">Numan</option>
+                            <option value="159">Nung Udoe</option>
+                            <option value="125">Nwaorieubi</option>
+                            <option value="378">Nzam</option>
+                            <option value="579">Obagaji</option>
+                            <option value="321">Obangede</option>
+                            <option value="374">Obarike-Ito</option>
+                            <option value="488">Obi</option>
+                            <option value="331">Obiaruku</option>
+                            <option value="223">Obiozara</option>
+                            <option value="173">Obollo-Afor</option>
+                            <option value="487">Obubra</option>
+                            <option value="259">Obudu</option>
+                            <option value="604">Odeda</option>
+                            <option value="287">Ode-Ekiti</option>
+                            <option value="447">Ode-Irele</option>
+                            <option value="532">Odo-Ere</option>
+                            <option value="373">Odogbolu</option>
+                            <option value="400">Odoro Ikpe</option>
+                            <option value="194">Odot</option>
+                            <option value="730">Odukpani</option>
+                            <option value="50">Offa</option>
+                            <option value="322">Ogaminana</option>
+                            <option value="190">Ogbede</option>
+                            <option value="594">Ogbe-Ijoh</option>
+                            <option value="680">Ogbere</option>
+                            <option value="367">Ogbia</option>
+                            <option value="10">Ogbomoso</option>
+                            <option value="272">Oghara</option>
+                            <option value="127">Ogidi</option>
+                            <option value="455">Ogoja</option>
+                            <option value="111">Ogu</option>
+                            <option value="626">Oguma</option>
+                            <option value="326">Oguta</option>
+                            <option value="464">Ogwashi-Uku</option>
+                            <option value="358">Oji River</option>
+                            <option value="87">Ojo</option>
+                            <option value="81">Ojota</option>
+                            <option value="103">Ojoto</option>
+                            <option value="479">Oju</option>
+                            <option value="243">Oka</option>
+                            <option value="646">Okada</option>
+                            <option value="273">Oke-Agbe</option>
+                            <option value="299">Okehi</option>
+                            <option value="291">Okeho</option>
+                            <option value="351">Oke-Ikpe</option>
+                            <option value="307">Oke-Ila</option>
+                            <option value="325">Okene</option>
+                            <option value="720">Oke-Oyi</option>
+                            <option value="220">Okigwe</option>
+                            <option value="324">Okitipupa</option>
+                            <option value="185">Oko Ita</option>
+                            <option value="270">Okopedi</option>
+                            <option value="181">Okoroete</option>
+                            <option value="513">Okpo</option>
+                            <option value="371">Okpoga</option>
+                            <option value="536">Okpoma</option>
+                            <option value="188">Okpuala-Ngwa</option>
+                            <option value="88">Okrika</option>
+                            <option value="225">Okuku</option>
+                            <option value="136">Okwe</option>
+                            <option value="290">Oleh</option>
+                            <option value="217">Omoba</option>
+                            <option value="256">Omoku</option>
+                            <option value="528">Omu-Aran</option>
+                            <option value="184">Omuo-Ekiti</option>
+                            <option value="38">Ondo</option>
+                            <option value="4">Onitsha</option>
+                            <option value="237">Onuebonyi Echara</option>
+                            <option value="264">Onueke</option>
+                            <option value="565">Onyedega</option>
+                            <option value="141">Opobo</option>
+                            <option value="511">Oporoma</option>
+                            <option value="523">Ore</option>
+                            <option value="328">Orerokpe</option>
+                            <option value="73">Orlu</option>
+                            <option value="130">Oron</option>
+                            <option value="75">Oshodi</option>
+                            <option value="138">Osisioma</option>
+                            <option value="28">Osogbo</option>
+                            <option value="533">Osu</option>
+                            <option value="189">Ota</option>
+                            <option value="226">Otan Ayegbaju</option>
+                            <option value="144">Otor-Udu</option>
+                            <option value="572">Otu</option>
+                            <option value="162">Otu-Jeremi</option>
+                            <option value="433">Otukpa</option>
+                            <option value="69">Otukpo</option>
+                            <option value="145">Otun-Ekiti</option>
+                            <option value="262">Otuocha</option>
+                            <option value="282">Owa-Oyibu</option>
+                            <option value="505">Owena</option>
+                            <option value="5">Owerri</option>
+                            <option value="36">Owo</option>
+                            <option value="458">Owode</option>
+                            <option value="578">Owu-Isin</option>
+                            <option value="330">Oye-Ekiti</option>
+                            <option value="17">Oyo</option>
+                            <option value="327">Ozoro</option>
+                            <option value="92">Ozubulu</option>
+                            <option value="624">Paiko</option>
+                            <option value="570">Pankshin</option>
+                            <option value="643">Pantisawa</option>
+                            <option value="297">Patani</option>
+                            <option value="711">Patigi</option>
+                            <option value="11">Port Harcourt</option>
+                            <option value="65">Potiskum</option>
+                            <option value="666">Rabah</option>
+                            <option value="681">Rann</option>
+                            <option value="276">Rano</option>
+                            <option value="614">Ribah</option>
+                            <option value="660">Rijau</option>
+                            <option value="310">Rimi</option>
+                            <option value="219">Rimin Gado</option>
+                            <option value="390">Ringim</option>
+                            <option value="555">Ririwai</option>
+                            <option value="175">Riyom</option>
+                            <option value="333">Rogo</option>
+                            <option value="382">Roni</option>
+                            <option value="105">Rumuodomaya</option>
+                            <option value="131">Saakpenwa</option>
+                            <option value="574">Sabon Birni</option>
+                            <option value="132">Sabon Gari</option>
+                            <option value="582">Sabon Garin Nangere</option>
+                            <option value="499">Sabongida-Ora</option>
+                            <option value="267">Sabon Wuse</option>
+                            <option value="405">Sabuwa</option>
+                            <option value="500">Safana</option>
+                            <option value="380">Sagbama</option>
+                            <option value="635">Sakaba</option>
+                            <option value="639">Saki</option>
+                            <option value="490">Saminaka</option>
+                            <option value="228">Sandamu</option>
+                            <option value="493">Sankera</option>
+                            <option value="551">Sankwala</option>
+                            <option value="32">Sapele</option>
+                            <option value="617">Sarkin Pawa</option>
+                            <option value="745">Serti</option>
+                            <option value="254">Shagamu</option>
+                            <option value="498">Shagari</option>
+                            <option value="592">Shanga</option>
+                            <option value="590">Shani</option>
+                            <option value="320">Shanono</option>
+                            <option value="664">Share</option>
+                            <option value="339">Shelleng</option>
+                            <option value="599">Shendam</option>
+                            <option value="480">Shinkafi</option>
+                            <option value="457">Silame</option>
+                            <option value="18">Sokoto</option>
+                            <option value="76">Somolu</option>
+                            <option value="696">Song</option>
+                            <option value="119">Suleja</option>
+                            <option value="586">Sule Tankarkar</option>
+                            <option value="309">Sumaila</option>
+                            <option value="718">Sunkani</option>
+                            <option value="78">Surulere</option>
+                            <option value="559">Tafawa Balewa</option>
+                            <option value="293">Takai</option>
+                            <option value="645">Takum</option>
+                            <option value="531">Talasse</option>
+                            <option value="607">Talata Mafara</option>
+                            <option value="445">Tambuwal</option>
+                            <option value="428">Taura</option>
+                            <option value="704">Tede</option>
+                            <option value="221">Tofa</option>
+                            <option value="682">Toro</option>
+                            <option value="697">Toto</option>
+                            <option value="744">Toungo</option>
+                            <option value="514">Tsafe</option>
+                            <option value="268">Tsanyawa</option>
+                            <option value="489">Tse-Agberagba</option>
+                            <option value="408">Tudun Wada</option>
+                            <option value="516">Tunkus</option>
+                            <option value="676">Tureta</option>
+                            <option value="522">Turunku</option>
+                            <option value="550">Twon-Brass</option>
+                            <option value="517">Ubiaja</option>
+                            <option value="250">Udi</option>
+                            <option value="529">Ugba</option>
+                            <option value="342">Ugbodo</option>
+                            <option value="553">Ugbokpo</option>
+                            <option value="332">Ugep</option>
+                            <option value="266">Ughelli</option>
+                            <option value="539">Ugwolawo</option>
+                            <option value="114">Ukpo</option>
+                            <option value="121">Ukpor</option>
+                            <option value="31">Umuahia</option>
+                            <option value="142">Umuelemai</option>
+                            <option value="304">Umuguma</option>
+                            <option value="417">Umulona</option>
+                            <option value="124">Umumma</option>
+                            <option value="86">Umundugba</option>
+                            <option value="353">Umuneke-Ngor</option>
+                            <option value="163">Umunze</option>
+                            <option value="97">Ungogo</option>
+                            <option value="280">Upenekang</option>
+                            <option value="234">Uquo</option>
+                            <option value="295">Uromi</option>
+                            <option value="196">Urua Inyang</option>
+                            <option value="154">Urualla</option>
+                            <option value="197">Urue Offong</option>
+                            <option value="89">Uselu</option>
+                            <option value="201">Utu Etim Ekpo</option>
+                            <option value="26">Uyo</option>
+                            <option value="323">Vandeikya</option>
+                            <option value="316">Wamako</option>
+                            <option value="657">Wamba</option>
+                            <option value="413">Wannune</option>
+                            <option value="652">Wara</option>
+                            <option value="269">Warawa</option>
+                            <option value="437">Warji</option>
+                            <option value="15">Warri</option>
+                            <option value="734">Wase</option>
+                            <option value="187">Wudil</option>
+                            <option value="64">Wukari</option>
+                            <option value="369">Wurno</option>
+                            <option value="694">Wushishi</option>
+                            <option value="497">Yabo</option>
+                            <option value="352">Yana</option>
+                            <option value="717">Yelwa</option>
+                            <option value="117">Yenagoa</option>
+                            <option value="30">Yola</option>
+                            <option value="732">Yusufari</option>
+                            <option value="308">Zakirai</option>
+                            <option value="51">Zango</option>
+                            <option value="29">Zaria</option>
+                            <option value="494">Zing</option>
+                            <option value="526">Zonkwa</option>
+                            <option value="556">Zurmi</option>
+                            <option value="314">Zuru</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5>State</h5>
+                        <select id="id_property_state" class="chosen-select" name="property_state" required="required">
+                            <option label="blank"></option>
+                            <option value="796">Abia</option>
+                            <option value="801">Adamawa</option>
+                            <option value="800">Akwa Ibom</option>
+                            <option value="780">Anambra</option>
+                            <option value="794">Bauchi</option>
+                            <option value="812">Bayelsa</option>
+                            <option value="803">Benue</option>
+                            <option value="783">Borno</option>
+                            <option value="797">Cross River</option>
+                            <option value="790">Delta</option>
+                            <option value="813">Ebonyi</option>
+                            <option value="784">Edo</option>
+                            <option value="798">Ekiti</option>
+                            <option value="793">Enugu</option>
+                            <option value="782">Federal Capital Territory</option>
+                            <option value="804">Gombe</option>
+                            <option value="781">Imo</option>
+                            <option value="807">Jigawa</option>
+                            <option value="791">Kaduna</option>
+                            <option value="778">Kano</option>
+                            <option value="799">Katsina</option>
+                            <option value="810">Kebbi</option>
+                            <option value="811">Kogi</option>
+                            <option value="789">Kwara</option>
+                            <option value="777">Lagos</option>
+                            <option value="808">Nasarawa</option>
+                            <option value="802">Niger</option>
+                            <option value="787">Ogun</option>
+                            <option value="785">Ondo</option>
+                            <option value="795">Osun</option>
+                            <option value="779">Oyo</option>
+                            <option value="788">Plateau</option>
+                            <option value="786">Rivers</option>
+                            <option value="792">Sokoto</option>
+                            <option value="809">Taraba</option>
+                            <option value="805">Yobe</option>
+                            <option value="806">Zamfara</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form">
+                    <h5>Detailed Information about Property</h5>
+                    {{form.property_detail}}
+                </div>
+
+                <h5 class="margin-top-30">Property Features</h5>
+                <div class="checkboxes in-row margin-bottom-20">
+                    {% for field in form.property_features.field.choices %}
+                    <input id="{{field.0}}" type="checkbox" name="property_features" value="{{field.0}}">
+                    <label for="{{field.0}}">{{field.1}}</label>
+                    {% endfor %}
+                </div>
+                <!-- Checkboxes / End -->
+            </div>
+
+            <h3>Property Photos</h3>
+            <div class="submit-section">
+                <p>You can only add atmost 10 photos</p>
+
+                <div class="row with-forms">
+                    {% for image_form in image_formset %}
+                    <div class="col-md-6">
+                        {{image_form.media}}
+                        <span><i class="fa fa-upload"></i> Upload Photo</span>
+                        {{image_form.image}}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+            </div>
+
+            <h3>Property Video (optional)</h3>
+            <div class="submit-section">
+
             {{video_form.media}}
-            {{bp_form.media}}
-            {{image_form.as_p}}
             {{video_form.as_p}}
-            {{bp_form.as_p}}
+
+            </div>
+
+
+            <h3>Property Blueprint</h3>
+            <div class="submit-section">
+                {% for bp_form in bp_formset %}
+                {{bp_form.media}}
+                {{bp_form.as_p}}
+                {% endfor %}    
+            </div>
+
 
 
             <div class="divider"></div>
@@ -64,26 +1065,26 @@ properties, purchase properties in nigeria, nigeria properties, affordable prope
 {% block inline_javascript %}
 
 <script>
-	$(".dropzone").dropzone({
-		dictDefaultMessage: "<i class='sl sl-icon-plus'></i> Click here or drop files to upload",
-	});
+    $(".dropzone").dropzone({
+        dictDefaultMessage: "<i class='sl sl-icon-plus'></i> Click here or drop files to upload",
+    });
 </script>
 
 <script>
     function initAutocomplete() {
         var input = document.getElementById('id_property_location');
         var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.addListener('place_changed', function() {
+        autocomplete.addListener('place_changed', function () {
             var place = autocomplete.getPlace();
             if (!place.geometry) {
-              window.alert("No details available for input: '" + place.name + "'");
-              return;
+                window.alert("No details available for input: '" + place.name + "'");
+                return;
             }
         });
 
         var near_location = document.getElementsById('id_property_near_location');
         var autocompleteN = new google.maps.places.Autocomplete(near_location);
-        autocompleteN.addListener('place_changed', function() {
+        autocompleteN.addListener('place_changed', function () {
             var placeN = autocompleteN.getPlace();
             if (!placeN.geometry) {
                 window.alert("No details available for input: '" + placeN.name + "'");
@@ -140,8 +1141,7 @@ properties, purchase properties in nigeria, nigeria properties, affordable prope
 
         <!-- Price -->
         <div class="col-md-4">
-            <h5>Price <i class="tip"
-                    data-tip-content="Type overall or monthly price if property is for rent"></i></h5>
+            <h5>Price <i class="tip" data-tip-content="Type overall or monthly price if property is for rent"></i></h5>
             <div class="select-input disabled-first-option">
                 <input type="text" data-unit="USD">
             </div>
@@ -229,8 +1229,7 @@ properties, purchase properties in nigeria, nigeria properties, affordable prope
     <!-- Description -->
     <div class="form">
         <h5>Description</h5>
-        <textarea class="WYSIWYG" name="summary" cols="40" rows="3" id="summary"
-            spellcheck="true"></textarea>
+        <textarea class="WYSIWYG" name="summary" cols="40" rows="3" id="summary" spellcheck="true"></textarea>
     </div>
 
     <!-- Row -->
