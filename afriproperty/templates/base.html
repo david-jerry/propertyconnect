@@ -93,10 +93,8 @@
   <!-- Your stuff: Third-party CSS libraries go here -->
   <link href="{% static 'css/iziToast.min.css' %}" rel="stylesheet">
 
-  {% compress css inline %}
   <!-- This file stores project-specific CSS -->
   {% include "snippets/css.html" %}
-  {% endcompress %}
 
 
   {% endblock %}
