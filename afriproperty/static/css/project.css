@@ -10119,11 +10119,6 @@ body .notification strong { border: none; }
 	cursor: pointer;
 }
 
-.notification.success .close {background: url(../images/alert_boxes_close_ico.png) 0 -8px no-repeat;}
-.notification.error .close {background: url(../images/alert_boxes_close_ico.png) 0 0 no-repeat;}
-.notification.warning .close {background: url(../images/alert_boxes_close_ico.png) 0 -16px no-repeat;}
-.notification.notice .close {background: url(../images/alert_boxes_close_ico.png) 0 -24px no-repeat;}
-
 
 .notification.notice p span i { font-weight: 500; }
 .notification a.button {
