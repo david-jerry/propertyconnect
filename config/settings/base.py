@@ -120,7 +120,7 @@ THIRD_PARTY_APPS = [
     # requand are only installed when someone else desires to use our repository after we push to github only for local use and not production ired for serving swagger api documentation
     "drf_yasg",
     # google translation
-    'google_translate',
+    # 'google_translate',
     # Shell commands with imports to all necessary models
     "shell_plus",
     # comments app
