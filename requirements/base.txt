@@ -30,7 +30,7 @@ FeedParser==5.2.1
 django-ipware==3.0.1
 django-autocomplete-light==3.8.2
 # django-flatpages-tinymce==0.1.1
-django-tinymce==3.3.0
+django-tinymce==3.4.0
 django-filebrowser-no-grappelli==3.8.0
 google-api-python-client==1.4.1
 django-admin-honeypot==1.1.0
