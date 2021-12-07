@@ -42,7 +42,7 @@ def contact_view(request):
             html_message = render_to_string('email/support_mail.html', {'message': message, 'from_email': from_email, 'subject': subject})
 
             try:
-                send_mail(subject, result_message, from_email, ['office@propertyconnect.ng'], html_message=html_message, fail_silently=False)
+                send_mail(subject, result_message, from_email, ['office@propertyconnectng.com'], html_message=html_message, fail_silently=False)
                 messages.success(request, "Your enquiry has been sent successfully")
             except BadHeaderError:
                 messages.error(request, "There was an error sending yout email at the moment, please try again later.")

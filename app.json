@@ -1,0 +1,29 @@
+{
+    "name": "Property Connect App",
+    "description": "Property connect is a fast growing reputable realtor with links all over Nigeria utilizing ICT to deliver real estate business in an easy, fast, reliable manner to make our investment yield commensurate value.",
+    "keywords": [
+      "property",
+      "housing",
+      "lease"
+    ],
+    "website": "https://www.propertyconnectng.com/",
+    "scripts": {
+      "dokku": {
+        "predeploy": "python manage.py cities; python manage.py banks; python manage.py features"
+      }
+    },
+    "formation": {
+        "web": {
+            "quantity":2
+        },
+        "worker": {
+            "quantity":2
+        }
+    },
+    "buildpacks": [
+      {
+        "url": "https://github.com/heroku/heroku-buildpack-python"
+      }
+    ]
+  }
+  

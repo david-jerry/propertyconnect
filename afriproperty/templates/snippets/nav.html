@@ -41,7 +41,9 @@
 						<li><a href="#">Companies</a>
 							<ul>
 								<li><a href="{% url 'users:agents' %}">Property Agents</a></li>
+								{% if request.user.is_superuser %}
 								<li><a href="{% url 'users:companies' %}">Property Companies</a></li>
+								{% endif %}
 							</ul>
 						</li>
 						<li><a href="#">Support</a>
