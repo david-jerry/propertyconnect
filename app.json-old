@@ -7,9 +7,17 @@
       "lease"
     ],
     "website": "https://www.propertyconnectng.com/",
+    "scripts": {
+      "dokku": {
+        "predeploy": "python manage.py cities; python manage.py banks; python manage.py features"
+      }
+    },
     "formation": {
-      "web": {
-          "quantity":1
+        "web": {
+            "quantity":1
+        },
+        "worker": {
+          "quantity":0
       }
     },
     "buildpacks": [
